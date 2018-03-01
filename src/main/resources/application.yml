@@ -1,3 +1,18 @@
+spring:
+  session:
+    store-type: none
+  jpa:
+    database: POSTGRESQL
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+  database:
+    driverClassName: org.postgresql.Driver
+  datasource:
+    platform: postgres
+    username: postgres
+    password: admin
+    url: jdbc:postgresql://localhost:5432/Instaspring
 jwt:
   header: Authorization
   parameter: token
@@ -7,3 +22,5 @@ jwt:
     authentication:
       path: auth
       refresh: refresh
+server:
+  port: 5000
