@@ -1,0 +1,74 @@
+package com.michaelfmnk.aldrin.security.controller;
+
+
+import com.michaelfmnk.aldrin.security.JwtAuthenticationRequest;
+import com.michaelfmnk.aldrin.security.JwtTokenUtil;
+import com.michaelfmnk.aldrin.security.JwtUser;
+import com.michaelfmnk.aldrin.security.repository.JwtAuthenticationResponse;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
+import org.springframework.mobile.device.Device;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
+
+@RestController
+@RequestMapping("/auth")
+public class AuthenticationRestController {
+
+
+    @Value("${jwt.header}")
+    String tokenHeader;
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private UserDetailsService userDetailsService;
+
+    @Autowired
+    private JwtTokenUtil jwtTokenUtil;
+
+    @PostMapping("${jwt.route.authentication.path}")
+    public ResponseEntity<?> createAuthenticationToken(
+            @RequestBody JwtAuthenticationRequest request,
+            Device device) throws Exception{
+        final Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        request.getUsername(),
+                        request.getPassword()
+                )
+        );
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        final UserDetails userDetails = userDetailsService.loadUserByUsername(request.getUsername());
+        final String token = jwtTokenUtil.generateToken(userDetails, device);
+        return ResponseEntity.ok(new JwtAuthenticationResponse(token));
+
+    }
+
+
+    @GetMapping(value = "${jwt.route.authentication.refresh}")
+    public ResponseEntity<?> refreshAndGetAuthenticationToken(HttpServletRequest request) {
+        String authToken = request.getHeader(tokenHeader);
+        final String token = authToken.substring(7);
+        String username = jwtTokenUtil.getUsernameFromToken(token);
+        JwtUser user = (JwtUser) userDetailsService.loadUserByUsername(username);
+
+        if (jwtTokenUtil.canTokenBeRefreshed(token, user.getLastPasswordResetDate())) {
+            String refreshedToken = jwtTokenUtil.refreshToken(token);
+            return ResponseEntity.ok(new JwtAuthenticationResponse(refreshedToken));
+        } else {
+            return ResponseEntity.badRequest().body(null);
+        }
+    }
+
+}
