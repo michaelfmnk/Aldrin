@@ -31,4 +31,8 @@ public class Post {
     @JsonManagedReference
     List<Photo> photos;
 
+    @OneToMany(mappedBy = "post")
+    @JsonManagedReference
+    List<Comment> comments;
+
 }
