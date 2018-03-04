@@ -1,6 +1,8 @@
 package com.michaelfmnk.aldrin.restapi;
 
 import com.michaelfmnk.aldrin.postgres.PostRepository;
+import com.michaelfmnk.aldrin.postgres.dao.Post;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -18,6 +20,11 @@ public class MainFeedController {
     PostRepository postRepository;
 
     @GetMapping
+    @ApiOperation(httpMethod = "GET",
+            value = "finds posts of users that you're subscribed for",
+            response = Post.class,
+            responseContainer = "List"
+    )
     public ResponseEntity<?> getFeed(@PageableDefault(direction = Sort.Direction.DESC, size = 50) Pageable pageable,
                                      Authentication authentication) {
         return ResponseEntity.ok(

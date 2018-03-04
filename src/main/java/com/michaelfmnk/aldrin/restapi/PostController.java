@@ -4,15 +4,15 @@ package com.michaelfmnk.aldrin.restapi;
 import com.michaelfmnk.aldrin.exception.ResourceNotFoundException;
 import com.michaelfmnk.aldrin.postgres.CommentRepository;
 import com.michaelfmnk.aldrin.postgres.PostRepository;
+import com.michaelfmnk.aldrin.postgres.UserRepository;
 import com.michaelfmnk.aldrin.postgres.dao.Post;
+import com.michaelfmnk.aldrin.postgres.dao.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/post/")
@@ -23,6 +23,9 @@ public class PostController {
 
     @Autowired
     private CommentRepository commentRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @GetMapping("{id}/")
     public ResponseEntity<?> getPostById(@PathVariable Long id){
@@ -44,5 +47,34 @@ public class PostController {
                 commentRepository.getCommentsByPostId(id, pageable)
         );
 
+    }
+
+    @PostMapping("{id}/likes")
+    public ResponseEntity<?> setLike(@PathVariable Long id,
+                                     Authentication authentication){
+        Post post = postRepository.findPostById(id);
+        User user = userRepository.findUserByUsername(authentication.getName());
+        if (post == null){
+            throw new ResourceNotFoundException("");
+        }
+        if (post.hasLikeByUser(user.getUsername())){
+            return ResponseEntity.ok("Already liked");
+        }
+        post.getLikes().add(user);
+        postRepository.save(post);
+        return ResponseEntity.ok("Liked");
+    }
+
+
+    @DeleteMapping("{id}/likes")
+    public ResponseEntity<?> deleteLike(@PathVariable Long id,
+                                        Authentication authentication){
+        Post post = postRepository.findPostById(id);
+        if (post == null){
+            throw new ResourceNotFoundException("Post with id="+id+" not found");
+        }
+        post.getLikes().removeIf((u) -> u.getUsername().equals(authentication.getName()));
+        postRepository.save(post);
+        return ResponseEntity.ok("Like removed");
     }
 }

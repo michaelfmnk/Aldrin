@@ -13,7 +13,6 @@ public class AldrinApplication {
 		SpringApplication.run(AldrinApplication.class, args);
 	}
 
-
 	@Bean
 	public WebMvcConfigurerAdapter webMvcConfigurerAdapter(){
 		return new WebMvcConfigurerAdapter() {

@@ -29,7 +29,7 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "subscribed_for_id", referencedColumnName = "id")
     )
     @ManyToMany
-    @JsonIgnoreProperties({"following", "followers", "posts"})
+    @JsonIgnoreProperties({"following", "followers", "posts", "likedPosts"})
     private List<User> following;
 
     @JoinTable(
@@ -38,7 +38,7 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "follower_id", referencedColumnName = "id")
     )
     @ManyToMany
-    @JsonIgnoreProperties({"following", "followers", "posts"})
+    @JsonIgnoreProperties({"following", "followers", "posts", "likedPosts"})
     private List<User> followers;
 
     @JoinTable(
@@ -49,6 +49,15 @@ public class User {
     @OneToMany(fetch = FetchType.EAGER)
     @JsonIgnore
     private List<Authority> authorities;
+
+
+    @OneToMany
+    @JoinTable(
+            name = "likes",
+            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "post_id", referencedColumnName = "id")
+    )
+    private List<Post> likedPosts;
 
     @OneToMany(mappedBy = "author")
     @JsonManagedReference

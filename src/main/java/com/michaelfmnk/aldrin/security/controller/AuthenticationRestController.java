@@ -23,7 +23,6 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping("/auth")
 public class AuthenticationRestController {
 
-
     @Value("${jwt.header}")
     String tokenHeader;
 
@@ -36,7 +35,7 @@ public class AuthenticationRestController {
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
 
-    @PostMapping("${jwt.route.authentication.path}")
+    @PostMapping("/")
     public ResponseEntity<?> createAuthenticationToken(
             @RequestBody JwtAuthenticationRequest request,
             Device device) throws Exception{

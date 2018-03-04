@@ -10,9 +10,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class JwtUserFactory {
-    private JwtUserFactory(){
-
-    }
+    private JwtUserFactory(){}
 
     public static JwtUser create(User user){
         return new JwtUser(
@@ -27,7 +25,6 @@ public class JwtUserFactory {
                 user.getLastPasswordResetDate()
         );
     }
-
 
     private static List<GrantedAuthority> mapToGrantedAuthorities(List<Authority> authorities) {
         return authorities.stream()

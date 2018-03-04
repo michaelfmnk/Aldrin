@@ -25,7 +25,7 @@ public class Comment {
 
     @JoinColumn(name = "user_id")
     @OneToOne
-    @JsonIgnoreProperties({"following", "followers", "posts"})
+    @JsonIgnoreProperties({"following", "followers", "posts", "likedPosts"})
     User user;
 
 
