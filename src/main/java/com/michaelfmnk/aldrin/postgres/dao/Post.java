@@ -22,16 +22,16 @@ public class Post {
     @JoinColumn(name = "user_id")
     @ManyToOne
     @JsonBackReference
-    User author;
+    private User author;
 
 
     @OneToMany(mappedBy = "post")
     @JsonManagedReference
-    List<Photo> photos;
+    private List<Photo> photos;
 
     @OneToMany(mappedBy = "post")
     @JsonManagedReference
-    List<Comment> comments;
+    private List<Comment> comments;
 
 
     @OneToMany
@@ -41,7 +41,7 @@ public class Post {
             inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id")
     )
     @JsonUserIdentity
-    List<User> likes;
+    private List<User> likes;
 
 
     public boolean hasLikeByUser(Long id){

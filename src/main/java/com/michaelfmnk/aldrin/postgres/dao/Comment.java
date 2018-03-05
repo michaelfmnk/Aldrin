@@ -11,20 +11,19 @@ import java.util.Date;
 @Data
 public class Comment {
     @Id
-    Long id;
-
-    String text;
-    Date date;
+    private Long id;
+    private String text;
+    private Date date;
 
     @ManyToOne
     @JoinColumn(name = "post_id")
     @JsonBackReference
-    Post post;
+    private Post post;
 
     @JoinColumn(name = "user_id")
     @OneToOne
     @JsonUserIdentity
-    User user;
+    private User user;
 
 
 }

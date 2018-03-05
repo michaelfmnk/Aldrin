@@ -12,12 +12,12 @@ import javax.persistence.ManyToOne;
 @Data
 public class Photo {
     @Id
-    Long id;
-    String url;
+    private Long id;
+    private String url;
 
 
     @JoinColumn(name = "post_id")
     @ManyToOne
     @JsonBackReference
-    Post post;
+    private Post post;
 }
