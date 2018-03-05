@@ -1,8 +1,7 @@
 package com.michaelfmnk.aldrin.postgres.dao;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.*;
+import com.michaelfmnk.aldrin.jackson.JsonUserIdentity;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -12,7 +11,6 @@ import java.util.Date;
 @Data
 public class Comment {
     @Id
-    @JsonIgnore
     Long id;
 
     String text;
@@ -25,7 +23,7 @@ public class Comment {
 
     @JoinColumn(name = "user_id")
     @OneToOne
-    @JsonIgnoreProperties({"following", "followers", "posts", "likedPosts"})
+    @JsonUserIdentity
     User user;
 
 

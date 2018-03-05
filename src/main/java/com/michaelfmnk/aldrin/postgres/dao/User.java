@@ -1,8 +1,7 @@
 package com.michaelfmnk.aldrin.postgres.dao;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.*;
+import com.michaelfmnk.aldrin.jackson.JsonUserIdentity;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -13,7 +12,6 @@ import java.util.List;
 @Data
 public class User {
     @Id
-    @JsonIgnore
     private Long id;
     private String username;
     private String firstName;
@@ -29,7 +27,7 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "subscribed_for_id", referencedColumnName = "id")
     )
     @ManyToMany
-    @JsonIgnoreProperties({"following", "followers", "posts", "likedPosts"})
+    @JsonUserIdentity
     private List<User> following;
 
     @JoinTable(
@@ -38,7 +36,7 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "follower_id", referencedColumnName = "id")
     )
     @ManyToMany
-    @JsonIgnoreProperties({"following", "followers", "posts", "likedPosts"})
+    @JsonUserIdentity
     private List<User> followers;
 
     @JoinTable(

@@ -1,7 +1,6 @@
 package com.michaelfmnk.aldrin.postgres.dao;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.Entity;
@@ -13,7 +12,6 @@ import javax.persistence.ManyToOne;
 @Data
 public class Photo {
     @Id
-    @JsonIgnore
     Long id;
     String url;
 

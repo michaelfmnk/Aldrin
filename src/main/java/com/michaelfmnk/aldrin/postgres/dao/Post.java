@@ -1,23 +1,19 @@
 package com.michaelfmnk.aldrin.postgres.dao;
 
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.*;
+import com.michaelfmnk.aldrin.jackson.JsonUserIdentity;
 import lombok.Data;
 
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 
 @Entity(name = "posts")
 @Data
 public class Post {
     @Id
-    @JsonIgnore
     private Long id;
     private String title;
     private Date date;
@@ -44,8 +40,8 @@ public class Post {
             joinColumns = @JoinColumn(name = "post_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id")
     )
-    @JsonIgnoreProperties({"following", "followers", "posts", "likedPosts"})
-    Set<User> likes;
+    @JsonUserIdentity
+    List<User> likes;
 
 
     public boolean hasLikeByUser(Long id){
