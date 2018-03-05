@@ -5,6 +5,7 @@ import com.michaelfmnk.aldrin.exception.ResourceNotFoundException;
 import com.michaelfmnk.aldrin.postgres.CommentRepository;
 import com.michaelfmnk.aldrin.postgres.PostRepository;
 import com.michaelfmnk.aldrin.postgres.UserRepository;
+import com.michaelfmnk.aldrin.postgres.dao.Comment;
 import com.michaelfmnk.aldrin.postgres.dao.Post;
 import com.michaelfmnk.aldrin.postgres.dao.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,8 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/api/post/")
@@ -46,6 +49,25 @@ public class PostController {
         return ResponseEntity.ok(
                 commentRepository.getCommentsByPostId(id, pageable)
         );
+
+    }
+
+
+    @PostMapping("{id}/comments")
+    public ResponseEntity<?> postComment(@PathVariable Long id,
+                                         @RequestBody @Valid Comment comment, Authentication authentication){
+        User user = userRepository.findUserByUsername(authentication.getName());
+        Post post = postRepository.findPostById(id);
+        if (user == null){
+            // throw exception
+        }
+        if (post == null){
+            //throw exception
+        }
+        comment.setPost(post);
+        comment.setUser(user);
+        commentRepository.save(comment);
+        return ResponseEntity.ok(post);
 
     }
 

@@ -1,6 +1,7 @@
 package com.michaelfmnk.aldrin.postgres.dao;
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.michaelfmnk.aldrin.jackson.JsonUserIdentity;
 import lombok.Data;
 

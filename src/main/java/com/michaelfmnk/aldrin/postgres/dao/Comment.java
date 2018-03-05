@@ -11,6 +11,7 @@ import java.util.Date;
 @Data
 public class Comment {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String text;
     private Date date;
@@ -24,6 +25,11 @@ public class Comment {
     @OneToOne
     @JsonUserIdentity
     private User user;
+
+    @PrePersist
+    protected void onCreate(){
+        date = new Date();
+    }
 
 
 }
