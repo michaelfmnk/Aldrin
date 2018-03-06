@@ -43,23 +43,25 @@ public class Post {
     @JsonUserIdentity
     private List<User> likes;
 
+    @PrePersist
+    protected void onCreate() {
+        date = new Date();
+    }
 
-    public boolean hasLikeByUser(Long id){
+    public boolean hasLikeByUser(Long id) {
         for (User liked :
                 likes) {
-
-            if (liked.getId().equals(id)){
+            if (liked.getId().equals(id)) {
                 return true;
             }
         }
         return false;
     }
 
-    public boolean hasLikeByUser(String username){
+    public boolean hasLikeByUser(String username) {
         for (User liked :
                 likes) {
-            System.out.println("name"+ liked.getUsername());
-            if (liked.getUsername().equals(username)){
+            if (liked.getUsername().equals(username)) {
                 return true;
             }
         }

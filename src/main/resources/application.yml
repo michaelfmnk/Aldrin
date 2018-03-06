@@ -13,6 +13,9 @@ spring:
     username: postgres
     password: admin
     url: jdbc:postgresql://localhost:5432/Instaspring
+  http:
+    multipart:
+      max-file-size: 2MB
 routes:
   auth: auth
 jwt:
@@ -26,3 +29,5 @@ jwt:
       refresh: refresh
 server:
   port: 5000
+storage:
+  location: upload-dir
