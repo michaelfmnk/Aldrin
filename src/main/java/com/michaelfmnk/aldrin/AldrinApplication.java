@@ -18,6 +18,10 @@ public class AldrinApplication {
 		SpringApplication.run(AldrinApplication.class, args);
 	}
 
+
+	/**
+	 * configuring cors access
+	 */
 	@Bean
 	public WebMvcConfigurerAdapter webMvcConfigurerAdapter(){
 		return new WebMvcConfigurerAdapter() {
@@ -28,6 +32,12 @@ public class AldrinApplication {
 		};
 	}
 
+
+	/**
+	 * deletes all uploaded data,
+	 * then creates dir if it doesn't exist
+	 * @param storageService service for soring data
+	 */
 	@Bean
 	CommandLineRunner init(StorageService storageService){
 		return (args) -> {
