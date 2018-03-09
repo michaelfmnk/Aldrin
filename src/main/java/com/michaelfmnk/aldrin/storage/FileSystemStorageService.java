@@ -19,6 +19,9 @@ import java.util.stream.Stream;
 @Service
 public class FileSystemStorageService implements  StorageService {
 
+    /**
+     * location where files are stored
+     */
     private final Path rootLocation;
 
     @Autowired
@@ -27,15 +30,25 @@ public class FileSystemStorageService implements  StorageService {
     }
 
 
+    /**
+     * creates directory for storing files
+     * @throws FileSystemStorageException if storage couldn't have been initialized
+     */
     @Override
     public void init() {
         try{
             Files.createDirectories(rootLocation);
         }catch (IOException e){
-            throw new FileSystemStorageException("Could not initialize storage");
+            throw new FileSystemStorageException("Could not initialize storage", e);
         }
     }
 
+    /**
+     * Saves multipart file to storage. Checks whether file is not empty
+     * and doesn't start with '..'. Then copies the received file to rootLocation.
+     * @param file multipart file
+     * @throws FileSystemStorageException
+     */
     @Override
     public void store(MultipartFile file) {
         String filename = StringUtils.cleanPath(file.getOriginalFilename());
@@ -51,10 +64,16 @@ public class FileSystemStorageService implements  StorageService {
                     StandardCopyOption.REPLACE_EXISTING);
 
         }catch (IOException e){
-            throw new FileSystemStorageException("Failed to store file " + filename);
+            throw new FileSystemStorageException("Failed to store file " + filename, e);
         }
     }
 
+
+    /**
+     * Walks through rootLocation(depth = 1) and
+     * @returns Stream of Paths for all sored files
+     * @throws FileSystemStorageException if IOException
+     */
     @Override
     public Stream<Path> loadAll() {
         try{
@@ -62,15 +81,29 @@ public class FileSystemStorageService implements  StorageService {
                     .filter(path -> !path.equals(this.rootLocation))
                     .map(this.rootLocation::relativize);
         }catch (IOException e){
-            throw new FileSystemStorageException("Failed to read sored files");
+            throw new FileSystemStorageException("Failed to read sored files", e);
         }
     }
 
+
+    /**
+     * Finds file with the specified filename in the file storage location
+     * and returns Path
+     * @param filename string
+     * @return Path to file with the specified filename
+     */
     @Override
     public Path load(String filename) {
         return rootLocation.resolve(filename);
     }
 
+    /**
+     * Crates Resource for a file. Checks whether it exists and is readable
+     * @param filename string
+     * @return Resource for specified filename.
+     * @throws FileSystemStorageException
+     * @throws StorageFileNotFoundException
+     */
     @Override
     public Resource loadAsResource(String filename) {
         try{
@@ -87,6 +120,10 @@ public class FileSystemStorageService implements  StorageService {
         }
     }
 
+
+    /**
+     * deletes all files from the storage
+     */
     @Override
     public void deleteAll() {
         FileSystemUtils.deleteRecursively(rootLocation.toFile());
