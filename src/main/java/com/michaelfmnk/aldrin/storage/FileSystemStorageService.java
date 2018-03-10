@@ -47,10 +47,11 @@ public class FileSystemStorageService implements  StorageService {
      * Saves multipart file to storage. Checks whether file is not empty
      * and doesn't start with '..'. Then copies the received file to rootLocation.
      * @param file multipart file
+     * @return Path to saved file
      * @throws FileSystemStorageException
      */
     @Override
-    public void store(MultipartFile file) {
+    public Path store(MultipartFile file) {
         String filename = StringUtils.cleanPath(file.getOriginalFilename());
         try{
             if (filename.isEmpty()){
@@ -62,6 +63,7 @@ public class FileSystemStorageService implements  StorageService {
             }
             Files.copy(file.getInputStream(), this.rootLocation.resolve(filename),
                     StandardCopyOption.REPLACE_EXISTING);
+            return rootLocation.resolve(file.getOriginalFilename());
 
         }catch (IOException e){
             throw new FileSystemStorageException("Failed to store file " + filename, e);

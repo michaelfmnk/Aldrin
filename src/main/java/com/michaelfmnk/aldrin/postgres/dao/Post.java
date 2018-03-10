@@ -6,14 +6,14 @@ import com.michaelfmnk.aldrin.jackson.JsonUserIdentity;
 import lombok.Data;
 
 import javax.persistence.*;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 
 @Entity(name = "posts")
 @Data
 public class Post {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String title;
     private Date date;
@@ -25,7 +25,8 @@ public class Post {
     private User author;
 
 
-    @OneToMany(mappedBy = "post")
+    @OneToMany(mappedBy = "post",
+    cascade = {CascadeType.ALL})
     @JsonManagedReference
     private List<Photo> photos;
 
@@ -66,6 +67,12 @@ public class Post {
             }
         }
         return false;
+    }
+
+    public void setPhoto(Photo photo){
+        List<Photo> photos = Arrays.asList(photo);
+        this.photos = photos;
+
     }
 
 

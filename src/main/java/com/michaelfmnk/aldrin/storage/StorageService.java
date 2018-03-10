@@ -17,8 +17,9 @@ public interface StorageService {
     /**
      * storage service saves file
      * @param file multipart file
+     * @return Path to saved file
      */
-    void store(MultipartFile file);
+    Path store(MultipartFile file);
 
 
     /**
