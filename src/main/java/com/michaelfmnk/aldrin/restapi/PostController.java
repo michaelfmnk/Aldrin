@@ -42,6 +42,7 @@ public class PostController {
         this.storageService = storageService;
     }
 
+
     @GetMapping("{id}/")
     public ResponseEntity<?> getPostById(@PathVariable Long id){
         Post post = postRepository.findPostById(id);
@@ -50,6 +51,7 @@ public class PostController {
         }
         return ResponseEntity.ok(post);
     }
+
 
     @PostMapping("")
     public ResponseEntity<?> postPost(@RequestParam("file") MultipartFile file,
@@ -71,7 +73,6 @@ public class PostController {
         return ResponseEntity.ok(post);
 
     }
-
 
 
     @GetMapping("{id}/comments")
@@ -100,6 +101,7 @@ public class PostController {
         commentRepository.save(comment);
         return ResponseEntity.ok(post);
     }
+
 
     @PostMapping("{id}/likes")
     public ResponseEntity<?> setLike(@PathVariable Long id,
