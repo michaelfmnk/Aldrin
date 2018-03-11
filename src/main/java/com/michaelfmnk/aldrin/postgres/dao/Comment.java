@@ -1,8 +1,9 @@
 package com.michaelfmnk.aldrin.postgres.dao;
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.michaelfmnk.aldrin.jackson.JsonUserIdentity;
 import lombok.Data;
+import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -13,6 +14,8 @@ public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Length(max = 300, message = "text must not contain more then 300 characters")
     private String text;
     private Date date;
 
@@ -30,6 +33,4 @@ public class Comment {
     protected void onCreate(){
         date = new Date();
     }
-
-
 }
