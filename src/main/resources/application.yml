@@ -18,12 +18,6 @@ spring:
       max-file-size: 2MB
 routes:
   auth: auth
-  rest:
-    api: api
-    posts: posts
-    post: posts/{id}
-    comments: posts/{id}/comments
-    comment: comments/{id}
 jwt:
   header: Authorization
   parameter: token
@@ -37,5 +31,4 @@ server:
   port: 5000
 storage:
   location: upload-dir
-validation:
-  message: you must not set parameter
+
