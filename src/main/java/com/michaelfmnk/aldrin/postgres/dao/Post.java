@@ -1,12 +1,16 @@
 package com.michaelfmnk.aldrin.postgres.dao;
 
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.michaelfmnk.aldrin.jackson.JsonUserIdentity;
 import lombok.Data;
+import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 
 
 @Entity(name = "posts")
@@ -15,6 +19,8 @@ public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Length(max = 300, message = "title must not contain more then 300 characters")
     private String title;
     private Date date;
 
@@ -25,8 +31,7 @@ public class Post {
     private User author;
 
 
-    @OneToMany(mappedBy = "post",
-    cascade = {CascadeType.ALL})
+    @OneToMany(mappedBy = "post", cascade = {CascadeType.ALL})
     @JsonManagedReference
     private List<Photo> photos;
 
@@ -72,7 +77,6 @@ public class Post {
     public void setPhoto(Photo photo){
         List<Photo> photos = Arrays.asList(photo);
         this.photos = photos;
-
     }
 
 
