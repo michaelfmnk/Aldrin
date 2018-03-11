@@ -23,7 +23,7 @@ import javax.validation.Valid;
 import java.nio.file.Path;
 
 @RestController
-@RequestMapping("/api/posts/")
+@RequestMapping("/api/posts")
 public class PostController {
 
     @Autowired
@@ -40,8 +40,30 @@ public class PostController {
     @Autowired
     public PostController(StorageService storageService){
         this.storageService = storageService;
+    }
+
+
+    @PostMapping("")
+    public ResponseEntity<?> postPost(@RequestParam("file") MultipartFile file,
+                                      @RequestPart("title") String title,
+                                      Authentication authentication,
+                                      RedirectAttributes redirectAttributes){
+        Path path = storageService.store(file);
+        User user = userRepository.findUserByUsername(authentication.getName());
+        Photo photo = new Photo();
+        Post post = new Post();
+        photo.setUrl(path.toString()); //setting url to uploaded image
+        post.setTitle(title);
+        post.setAuthor(user);
+
+        post.setPhoto(photo);  //setting relations between post and photo
+        photo.setPost(post);
+        postRepository.save(post);
+
+        return ResponseEntity.ok(post);
 
     }
+
 
     @GetMapping("{id}/")
     public ResponseEntity<?> getPostById(@PathVariable Long id){
@@ -52,34 +74,9 @@ public class PostController {
         return ResponseEntity.ok(post);
     }
 
-    @PostMapping("/")
-    public ResponseEntity<?> postPost(@RequestParam("file") MultipartFile file,
-                                      @RequestPart("title") String title,
-                                      Authentication authentication,
-                                      RedirectAttributes redirectAttributes){
-        Path path = storageService.store(file);
-        User user = userRepository.findUserByUsername(authentication.getName());
-        Photo photo = new Photo();
-        photo.setUrl(path.toString());
-
-        Post post = new Post();
-        post.setTitle(title);
-        post.setAuthor(user);
-        post.setPhoto(photo);
-        photo.setPost(post);
-        postRepository.save(post);
-
-
-        redirectAttributes.addFlashAttribute("message",
-                "You successfully uploaded " + file.getOriginalFilename() + "!");
-
-        return ResponseEntity.ok(post);
-
-    }
-
 
     @GetMapping("{id}/comments")
-    public ResponseEntity<?> getComments(@PathVariable Long id,
+    public ResponseEntity<?> getCommentsForPost(@PathVariable Long id,
                                          @PageableDefault(
                                                  size = 100,
                                                  sort = "date"
@@ -96,17 +93,13 @@ public class PostController {
                                          @RequestBody @Valid Comment comment, Authentication authentication){
         User user = userRepository.findUserByUsername(authentication.getName());
         Post post = postRepository.findPostById(id);
-        if (user == null){
-            // todo throw exception
-        }
         if (post == null){
-            // todo throw exception
+            throw new ResourceNotFoundException("Post with id="+id+" not found");
         }
         comment.setPost(post);
         comment.setUser(user);
         commentRepository.save(comment);
         return ResponseEntity.ok(post);
-
     }
 
     @PostMapping("{id}/likes")
@@ -135,6 +128,6 @@ public class PostController {
         }
         post.getLikes().removeIf((u) -> u.getUsername().equals(authentication.getName()));
         postRepository.save(post);
-        return ResponseEntity.ok("Like removed");
+        return ResponseEntity.ok("Like deleted");
     }
 }
