@@ -42,6 +42,14 @@ public class PostController {
         this.storageService = storageService;
     }
 
+    @GetMapping("{id}/")
+    public ResponseEntity<?> getPostById(@PathVariable Long id){
+        Post post = postRepository.findPostById(id);
+        if (post==null){
+            throw new ResourceNotFoundException("Post with id " + id +" not found");
+        }
+        return ResponseEntity.ok(post);
+    }
 
     @PostMapping("")
     public ResponseEntity<?> postPost(@RequestParam("file") MultipartFile file,
@@ -65,18 +73,9 @@ public class PostController {
     }
 
 
-    @GetMapping("{id}")
-    public ResponseEntity<?> getPostById(@PathVariable Long id){
-        Post post = postRepository.findPostById(id);
-        if (post==null){
-            throw new ResourceNotFoundException("Post with id " + id +" not found");
-        }
-        return ResponseEntity.ok(post);
-    }
-
 
     @GetMapping("{id}/comments")
-    public ResponseEntity<?> getCommentsForPost(@PathVariable Long id,
+    public ResponseEntity<?> getComments(@PathVariable Long id,
                                          @PageableDefault(
                                                  size = 100,
                                                  sort = "date"
@@ -128,6 +127,6 @@ public class PostController {
         }
         post.getLikes().removeIf((u) -> u.getUsername().equals(authentication.getName()));
         postRepository.save(post);
-        return ResponseEntity.ok("Like deleted");
+        return ResponseEntity.ok("Like removed");
     }
 }
