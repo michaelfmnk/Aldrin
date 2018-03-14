@@ -6,6 +6,7 @@ import com.michaelfmnk.aldrin.postgres.dao.User;
 import com.michaelfmnk.aldrin.security.JwtAuthenticationRequest;
 import com.michaelfmnk.aldrin.security.JwtTokenUtil;
 import com.michaelfmnk.aldrin.security.JwtUser;
+import com.michaelfmnk.aldrin.exception.SuchUserAlreadyExitsException;
 import com.michaelfmnk.aldrin.security.repository.JwtAuthenticationResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -81,6 +82,9 @@ public class AuthenticationRestController {
 
     @PostMapping(value = "${jwt.route.singup}")
     public ResponseEntity<?> registerUser(@RequestBody JwtAuthenticationRequest request){
+        if (userDetailsService.loadUserByUsername(request.getUsername()) != null){
+            throw new SuchUserAlreadyExitsException();
+        }
         User user = new User();
         user.setUsername(request.getUsername());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
