@@ -30,21 +30,29 @@ public class AuthenticationRestController {
     @Value("${jwt.header}")
     String tokenHeader;
 
-    @Autowired
+
     private AuthenticationManager authenticationManager;
 
-    @Autowired
     private UserDetailsService userDetailsService;
 
-    @Autowired
     private UserRepository userRepository;
 
-    @Autowired
     private JwtTokenUtil jwtTokenUtil;
 
-    @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    public AuthenticationRestController(AuthenticationManager auManager,
+                                        UserDetailsService userDetailsService,
+                                        UserRepository userRepository,
+                                        JwtTokenUtil jwtTokenUtil,
+                                        PasswordEncoder passwordEncoder) {
+        this.authenticationManager = auManager;
+        this.userDetailsService = userDetailsService;
+        this.userRepository = userRepository;
+        this.jwtTokenUtil = jwtTokenUtil;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     @PostMapping("")
     public ResponseEntity<?> createAuthenticationToken(
