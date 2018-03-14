@@ -1,9 +1,12 @@
 package com.michaelfmnk.aldrin.security.controller;
 
 
+import com.michaelfmnk.aldrin.postgres.UserRepository;
+import com.michaelfmnk.aldrin.postgres.dao.User;
 import com.michaelfmnk.aldrin.security.JwtAuthenticationRequest;
 import com.michaelfmnk.aldrin.security.JwtTokenUtil;
 import com.michaelfmnk.aldrin.security.JwtUser;
+import com.michaelfmnk.aldrin.exception.SuchUserAlreadyExitsException;
 import com.michaelfmnk.aldrin.security.repository.JwtAuthenticationResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,6 +18,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -26,32 +30,45 @@ public class AuthenticationRestController {
     @Value("${jwt.header}")
     String tokenHeader;
 
-    @Autowired
+
     private AuthenticationManager authenticationManager;
 
-    @Autowired
     private UserDetailsService userDetailsService;
 
-    @Autowired
+    private UserRepository userRepository;
+
     private JwtTokenUtil jwtTokenUtil;
 
-    @PostMapping("/")
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    public AuthenticationRestController(AuthenticationManager auManager,
+                                        UserDetailsService userDetailsService,
+                                        UserRepository userRepository,
+                                        JwtTokenUtil jwtTokenUtil,
+                                        PasswordEncoder passwordEncoder) {
+        this.authenticationManager = auManager;
+        this.userDetailsService = userDetailsService;
+        this.userRepository = userRepository;
+        this.jwtTokenUtil = jwtTokenUtil;
+        this.passwordEncoder = passwordEncoder;
+    }
+
+    @PostMapping("")
     public ResponseEntity<?> createAuthenticationToken(
             @RequestBody JwtAuthenticationRequest request,
             Device device) throws Exception{
+
         final Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getUsername(),
                         request.getPassword()
                 )
         );
-
         SecurityContextHolder.getContext().setAuthentication(authentication);
-
         final UserDetails userDetails = userDetailsService.loadUserByUsername(request.getUsername());
         final String token = jwtTokenUtil.generateToken(userDetails, device);
         return ResponseEntity.ok(new JwtAuthenticationResponse(token));
-
     }
 
 
@@ -70,4 +87,16 @@ public class AuthenticationRestController {
         }
     }
 
+
+    @PostMapping(value = "${jwt.route.singup}")
+    public ResponseEntity<?> registerUser(@RequestBody JwtAuthenticationRequest request){
+        if (userDetailsService.loadUserByUsername(request.getUsername()) != null){
+            throw new SuchUserAlreadyExitsException();
+        }
+        User user = new User();
+        user.setUsername(request.getUsername());
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        userRepository.save(user);
+        return ResponseEntity.ok("registered");
+    }
 }

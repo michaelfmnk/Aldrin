@@ -27,6 +27,7 @@ jwt:
     authentication:
       path: auth
       refresh: refresh
+    singup: singup
 server:
   port: 5000
 storage:
