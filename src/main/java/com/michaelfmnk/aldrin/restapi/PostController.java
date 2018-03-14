@@ -26,30 +26,47 @@ import java.nio.file.Path;
 @RequestMapping("/api/posts")
 public class PostController {
 
-    @Autowired
+
     private PostRepository postRepository;
 
-    @Autowired
     private CommentRepository commentRepository;
 
-    @Autowired
     private UserRepository userRepository;
 
     private final StorageService storageService;
 
     @Autowired
-    public PostController(StorageService storageService){
+    public PostController(StorageService storageService,
+                          PostRepository postRepository,
+                          CommentRepository commentRepository,
+                          UserRepository userRepository){
+        this.postRepository = postRepository;
+        this.commentRepository = commentRepository;
+        this.userRepository = userRepository;
         this.storageService = storageService;
     }
 
 
-    @GetMapping("{id}/")
+    @GetMapping("{id}")
     public ResponseEntity<?> getPostById(@PathVariable Long id){
         Post post = postRepository.findPostById(id);
         if (post==null){
             throw new ResourceNotFoundException("Post with id " + id +" not found");
         }
         return ResponseEntity.ok(post);
+    }
+
+
+    @PutMapping("{id}")
+    public ResponseEntity<?> updatePost(@PathVariable Long id,
+                                        @RequestBody Post updatedPost){
+        Post post = postRepository.findPostById(id);
+        if(post==null){
+            throw new ResourceNotFoundException("Post with id " + id +" not found");
+        }
+        post.setTitle(updatedPost.getTitle()); //now updates only title
+        postRepository.save(post);
+        return ResponseEntity.ok("updated"); //todo proper response
     }
 
 
