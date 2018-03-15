@@ -3,6 +3,7 @@ package com.michaelfmnk.aldrin.restapi;
 import com.michaelfmnk.aldrin.exception.ResourceNotFoundException;
 import com.michaelfmnk.aldrin.postgres.UserRepository;
 import com.michaelfmnk.aldrin.postgres.dao.User;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,6 +24,12 @@ public class UserController {
 
 
     @GetMapping("/{username}")
+    @ApiOperation(
+            httpMethod = "GET",
+            value = "Returns user information",
+            response = User.class,
+            produces = "application/json"
+    )
     public ResponseEntity<?> getUserByUsername(@PathVariable("username") String username){
         User user = userRepository.findUserByUsername(username);
         if (user==null){

@@ -27,6 +27,9 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping("/auth")
 public class AuthenticationRestController {
 
+    /**
+     * jwt-token header name
+     */
     @Value("${jwt.header}")
     String tokenHeader;
 
