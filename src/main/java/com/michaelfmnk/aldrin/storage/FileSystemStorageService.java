@@ -73,7 +73,7 @@ public class FileSystemStorageService implements  StorageService {
 
     /**
      * Walks through rootLocation(depth = 1) and
-     * @returns Stream of Paths for all sored files
+     * @return Stream of Paths for all sored files
      * @throws FileSystemStorageException if IOException
      */
     @Override

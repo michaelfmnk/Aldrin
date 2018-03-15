@@ -57,7 +57,7 @@ public class JwtTokenUtil implements Serializable {
     /**
      * @param token jwt-token
      * @param claimResolver function
-     * @returns claim by claimResolver
+     * @return claim by claimResolver
      */
     private <T> T getClaimFromToken(String token, Function<Claims, T> claimResolver) {
         final Claims claims = getAllClaimsFromToken(token);
@@ -67,7 +67,7 @@ public class JwtTokenUtil implements Serializable {
 
     /**
      * @param token jwt-token
-     * @returns all Claims from a token
+     * @return all Claims from a token
      */
     private Claims getAllClaimsFromToken(String token) {
         return Jwts.parser()
