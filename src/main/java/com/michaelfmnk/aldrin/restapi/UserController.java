@@ -1,10 +1,8 @@
 package com.michaelfmnk.aldrin.restapi;
 
 import com.michaelfmnk.aldrin.exception.ResourceNotFoundException;
-import com.michaelfmnk.aldrin.postgres.PostRepository;
 import com.michaelfmnk.aldrin.postgres.UserRepository;
 import com.michaelfmnk.aldrin.postgres.dao.User;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,8 +13,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/user")
 public class UserController {
+
+    private UserRepository userRepository;
+
     @Autowired
-    UserRepository userRepository;
+    public UserController(UserRepository userRepository){
+        this.userRepository = userRepository;
+    }
 
 
     @GetMapping("/{username}")

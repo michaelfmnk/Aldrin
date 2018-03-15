@@ -16,8 +16,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/feed")
 public class MainFeedController {
+
+    private PostRepository postRepository;
+
     @Autowired
-    PostRepository postRepository;
+    public MainFeedController(PostRepository postRepository){
+        this.postRepository = postRepository;
+    }
 
     @GetMapping
     @ApiOperation(httpMethod = "GET",

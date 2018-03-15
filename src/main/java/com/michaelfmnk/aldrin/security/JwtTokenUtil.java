@@ -27,9 +27,12 @@ public class JwtTokenUtil implements Serializable {
     static final String AUDIENCE_MOBILE = "mobile";
     static final String AUDIENCE_TABLET = "tablet";
 
+    private TimeProvider timeProvider;
 
     @Autowired
-    private TimeProvider timeProvider;
+    public JwtTokenUtil(TimeProvider timeProvider){
+        this.timeProvider = timeProvider;
+    }
 
     /**
      * with this secret jwt-token is signed
@@ -57,7 +60,7 @@ public class JwtTokenUtil implements Serializable {
     /**
      * @param token jwt-token
      * @param claimResolver function
-     * @returns claim by claimResolver
+     * @return claim by claimResolver
      */
     private <T> T getClaimFromToken(String token, Function<Claims, T> claimResolver) {
         final Claims claims = getAllClaimsFromToken(token);
@@ -67,7 +70,7 @@ public class JwtTokenUtil implements Serializable {
 
     /**
      * @param token jwt-token
-     * @returns all Claims from a token
+     * @return all Claims from a token
      */
     private Claims getAllClaimsFromToken(String token) {
         return Jwts.parser()

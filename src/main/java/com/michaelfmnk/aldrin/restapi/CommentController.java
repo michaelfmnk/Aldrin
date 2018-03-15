@@ -13,8 +13,13 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping("/api/comments")
 public class CommentController {
-    @Autowired
+
     private CommentRepository commentRepository;
+
+    @Autowired
+    public CommentController(CommentRepository commentRepository){
+        this.commentRepository = commentRepository;
+    }
 
     @GetMapping("{id}")
     public ResponseEntity<?> getCommentById(@PathVariable Long id){
