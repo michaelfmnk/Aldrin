@@ -4,18 +4,20 @@ spring:
   jpa:
     database: POSTGRESQL
     show-sql: true
-    hibernate:
-      ddl-auto: update
-  database:
-    driverClassName: org.postgresql.Driver
+    database-platform: org.hibernate.dialect.PostgreSQL9Dialect
   datasource:
     platform: postgres
     username: postgres
     password: admin
     url: jdbc:postgresql://localhost:5432/Instaspring
+    driver-class-name: org.postgresql.Driver
+    tomcat:
+      test-on-borrow: true
   http:
     multipart:
       max-file-size: 2MB
+  jackson:
+    property-naming-strategy: SNAKE_CASE
 routes:
   auth: auth
 jwt:
@@ -28,8 +30,6 @@ jwt:
       path: auth
       refresh: refresh
     singup: singup
-server:
-  port: 5000
 storage:
   location: upload-dir
 

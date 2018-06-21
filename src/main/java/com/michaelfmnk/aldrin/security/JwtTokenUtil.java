@@ -1,6 +1,6 @@
 package com.michaelfmnk.aldrin.security;
 
-import com.michaelfmnk.aldrin.utils.TimeProvider;
+import com.michaelfmnk.aldrin.services.utils.TimeProvider;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -37,14 +37,14 @@ public class JwtTokenUtil implements Serializable {
     /**
      * with this secret jwt-token is signed
      */
-    @Value("${jwt.secret}")
-    private String secret;
+   // @Value("${jwt.secret}")
+    private String secret = "mySecret";
 
     /**
      * how long jwt-token is valid (in seconds)
      */
-    @Value("${jwt.expiration}")
-    private Long expiration;
+  //  @Value("${jwt.expiration}")
+    private Long expiration = 100000L;
 
 
     /**

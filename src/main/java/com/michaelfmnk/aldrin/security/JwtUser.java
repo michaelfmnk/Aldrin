@@ -11,7 +11,7 @@ import java.util.Date;
 
 public class JwtUser implements UserDetails{
 
-    private final Long id;
+    private final Integer id;
     private final String username;
     @Getter private final String firstname;
     @Getter private final String lastname;
@@ -21,7 +21,7 @@ public class JwtUser implements UserDetails{
     private final boolean enabled;
     @Getter private final Date lastPasswordResetDate;
 
-    public JwtUser(Long id,
+    public JwtUser(Integer id,
                    String username,
                    String firstname,
                    String lastname,
@@ -81,7 +81,7 @@ public class JwtUser implements UserDetails{
     }
 
     @JsonIgnore
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 

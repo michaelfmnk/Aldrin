@@ -1,8 +1,8 @@
 package com.michaelfmnk.aldrin.security;
 
 
-import com.michaelfmnk.aldrin.postgres.dao.Authority;
-import com.michaelfmnk.aldrin.postgres.dao.User;
+import com.michaelfmnk.aldrin.entities.Authority;
+import com.michaelfmnk.aldrin.entities.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
@@ -14,7 +14,7 @@ public class JwtUserFactory {
 
     public static JwtUser create(User user){
         return new JwtUser(
-                user.getId(),
+                user.getUserId(),
                 user.getUsername(),
                 user.getFirstName(),
                 user.getLastName(),

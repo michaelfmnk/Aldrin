@@ -1,13 +1,14 @@
 package com.michaelfmnk.aldrin.security.controller;
 
 
-import com.michaelfmnk.aldrin.postgres.UserRepository;
-import com.michaelfmnk.aldrin.postgres.dao.User;
+import com.michaelfmnk.aldrin.repositories.UserRepository;
+import com.michaelfmnk.aldrin.entities.User;
 import com.michaelfmnk.aldrin.security.JwtAuthenticationRequest;
 import com.michaelfmnk.aldrin.security.JwtTokenUtil;
 import com.michaelfmnk.aldrin.security.JwtUser;
 import com.michaelfmnk.aldrin.exception.SuchUserAlreadyExitsException;
 import com.michaelfmnk.aldrin.security.repository.JwtAuthenticationResponse;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -25,37 +26,21 @@ import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/auth")
+@AllArgsConstructor
 public class AuthenticationRestController {
 
     /**
      * jwt-token header name
      */
     @Value("${jwt.header}")
-    String tokenHeader;
+    private static String tokenHeader;
 
 
-    private AuthenticationManager authenticationManager;
-
-    private UserDetailsService userDetailsService;
-
-    private UserRepository userRepository;
-
-    private JwtTokenUtil jwtTokenUtil;
-
-    private PasswordEncoder passwordEncoder;
-
-    @Autowired
-    public AuthenticationRestController(AuthenticationManager auManager,
-                                        UserDetailsService userDetailsService,
-                                        UserRepository userRepository,
-                                        JwtTokenUtil jwtTokenUtil,
-                                        PasswordEncoder passwordEncoder) {
-        this.authenticationManager = auManager;
-        this.userDetailsService = userDetailsService;
-        this.userRepository = userRepository;
-        this.jwtTokenUtil = jwtTokenUtil;
-        this.passwordEncoder = passwordEncoder;
-    }
+    private final AuthenticationManager authenticationManager;
+    private final UserDetailsService userDetailsService;
+    private final UserRepository userRepository;
+    private final JwtTokenUtil jwtTokenUtil;
+    private final PasswordEncoder passwordEncoder;
 
     @PostMapping("")
     public ResponseEntity<?> createAuthenticationToken(
