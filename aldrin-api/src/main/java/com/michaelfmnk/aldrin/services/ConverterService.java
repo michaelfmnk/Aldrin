@@ -44,5 +44,12 @@ public class ConverterService {
                 .build();
     }
 
-
+    @IfNullReturnNull
+    public Comment toEntity(CommentDto commentDto, Integer postId, Integer userId) {
+        return Comment.builder()
+                .commentId(commentDto.getCommentId())
+                .userId(userId)
+                
+                .build();
+    }
 }

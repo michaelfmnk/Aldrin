@@ -3,11 +3,8 @@ package com.michaelfmnk.aldrin.services;
 
 import com.michaelfmnk.aldrin.dtos.UserDto;
 import com.michaelfmnk.aldrin.repositories.UserRepository;
-import com.michaelfmnk.aldrin.entities.User;
 import com.michaelfmnk.aldrin.security.JwtUserFactory;
-
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

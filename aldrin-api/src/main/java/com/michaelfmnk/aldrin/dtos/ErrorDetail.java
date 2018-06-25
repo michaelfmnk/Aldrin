@@ -1,6 +1,5 @@
 package com.michaelfmnk.aldrin.dtos;
 
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

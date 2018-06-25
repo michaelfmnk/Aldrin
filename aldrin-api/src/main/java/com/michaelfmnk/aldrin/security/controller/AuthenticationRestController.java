@@ -1,15 +1,14 @@
 package com.michaelfmnk.aldrin.security.controller;
 
 
-import com.michaelfmnk.aldrin.repositories.UserRepository;
 import com.michaelfmnk.aldrin.entities.User;
+import com.michaelfmnk.aldrin.exception.SuchUserAlreadyExitsException;
+import com.michaelfmnk.aldrin.repositories.UserRepository;
 import com.michaelfmnk.aldrin.security.JwtAuthenticationRequest;
 import com.michaelfmnk.aldrin.security.JwtTokenUtil;
 import com.michaelfmnk.aldrin.security.JwtUser;
-import com.michaelfmnk.aldrin.exception.SuchUserAlreadyExitsException;
 import com.michaelfmnk.aldrin.security.repository.JwtAuthenticationResponse;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mobile.device.Device;

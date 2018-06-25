@@ -1,6 +1,7 @@
 package com.michaelfmnk.aldrin.entities;
 
-import lombok.*;
+import lombok.Builder;
+import lombok.Data;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;

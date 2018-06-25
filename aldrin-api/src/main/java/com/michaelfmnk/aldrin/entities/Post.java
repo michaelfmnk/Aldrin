@@ -1,14 +1,12 @@
 package com.michaelfmnk.aldrin.entities;
 
 
-
 import com.michaelfmnk.aldrin.dtos.PostDto;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 
 

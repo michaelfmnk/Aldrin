@@ -3,17 +3,17 @@ package com.michaelfmnk.aldrin.services;
 import com.michaelfmnk.aldrin.dtos.CommentDto;
 import com.michaelfmnk.aldrin.dtos.PostDto;
 import com.michaelfmnk.aldrin.dtos.params.PageSortParams;
-import com.michaelfmnk.aldrin.dtos.params.PageSortRequest;
+import com.michaelfmnk.aldrin.entities.Comment;
 import com.michaelfmnk.aldrin.entities.Post;
 import com.michaelfmnk.aldrin.entities.User;
-import com.michaelfmnk.aldrin.repositories.CommentRepository;
 import com.michaelfmnk.aldrin.repositories.PostRepository;
 import com.michaelfmnk.aldrin.repositories.UserRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
-
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Objects;
 
@@ -57,8 +57,7 @@ public class PostService {
     }
 
     public void deleteLikeForPost(Integer postId, Integer userId) {
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new EntityNotFoundException(format("no post was found with post_id=%s", postId)));
+        Post post = getValidPost(userId);
         post.getLikes().removeIf(x -> Objects.equals(userId, x.getUserId()));
         postRepository.save(post);
     }
@@ -72,5 +71,22 @@ public class PostService {
                 })
                 .map(postRepository::save)
                 .orElseThrow(() -> new EntityNotFoundException());
+    }
+
+    public PostDto addCommentToPost(Integer postId, Integer userId, CommentDto commentDto) {
+        Comment comment = converterService.toEntity(commentDto, postId, userId);
+        Post post = postRepository.findById(postId)
+                .map(x -> {
+                    x.getComments().add(comment);
+                    return x;
+                })
+                .orElseThrow(() -> new EntityNotFoundException(format("no post was found with post_id=%s", postId)));
+        post = postRepository.save(post);
+        return converterService.toDto(post);
+    }
+
+    private Post getValidPost(Integer postId) {
+        return postRepository.findById(postId)
+                .orElseThrow(() -> new EntityNotFoundException(format("no post was found with post_id=%s", postId)));
     }
 }
