@@ -1,8 +1,8 @@
 export const LIKE_FEED_ITEM = 'LIKE_FEED_ITEM';
 
-export const likePostItem = itemId => {
+export const likePostItem = postId => {
     return {
         type: LIKE_FEED_ITEM,
-        itemId,
+        postId,
     };
 };
