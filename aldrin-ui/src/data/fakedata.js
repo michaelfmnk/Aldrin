@@ -3,6 +3,7 @@ export const feed = [
         id: 1,
         title: 'Title 1',
         author: {
+            id: 1,
             name: 'Michael Stevens',
             avatar: 'https://i.imgur.com/9rnJnmm.png'
         },
@@ -15,6 +16,7 @@ export const feed = [
                 id: 101,
                 content: 'fake comment This impressive paella is a perfect party dish and a fun meal to cook together with your guests. Add 1 cup of frozen peas along ',
                 author: {
+                    id: 2,
                     name: 'Vickie Montgomery',
                     avatar: 'https://i.imgur.com/w5mIBUV.jpg',
                 },
@@ -25,6 +27,7 @@ export const feed = [
         id: 2,
         title: 'Title 2',
         author: {
+            id: 2,
             name: 'Vickie Montgomery',
             avatar: 'https://i.imgur.com/w5mIBUV.jpg',
         },
@@ -37,9 +40,19 @@ export const feed = [
                 id: 102,
                 content: 'fake comment',
                 author: {
+                    id: 1,
                     name: 'Michael Stevens',
                     avatar: 'https://i.imgur.com/9rnJnmm.png'
                 }
+            },
+            {
+                id: 123,
+                content: 'fake cfun meal to cook together with your guests. Add 1 cup of frozen peas along ',
+                author: {
+                    id: 2,
+                    name: 'Vickie Montgomery',
+                    avatar: 'https://i.imgur.com/w5mIBUV.jpg',
+                },
             }
         ],
     },
@@ -47,6 +60,7 @@ export const feed = [
         id: 3,
         title: 'Title 3',
         author: {
+            id: 3,
             name: 'Austin Evans',
             avatar: 'https://i.imgur.com/9rnJnmm.png',
         },
@@ -59,6 +73,7 @@ export const feed = [
                 id: 103,
                 content: 'fake comment',
                 author: {
+                    id: 2,
                     name: 'Vickie Montgomery',
                     avatar: 'https://i.imgur.com/w5mIBUV.jpg',
                 },
