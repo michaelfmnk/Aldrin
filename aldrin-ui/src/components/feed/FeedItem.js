@@ -1,9 +1,13 @@
 import React, { PureComponent } from 'react';
-import { Card, CardMedia, CardHeader, Avatar, CardActions, IconButton, CardContent, Typography, withStyles } from '@material-ui/core';
-import { Favorite } from '@material-ui/icons';
+import { Card, CardMedia, CardHeader, Avatar, CardActions, IconButton, CardContent, Typography,
+    withStyles, Collapse, List } from '@material-ui/core';
+import { Favorite, ExpandMore } from '@material-ui/icons';
 import PropTypes from 'prop-types';
 import dateformat from 'dateformat';
 import cx from 'classnames';
+import CommentItem from "components/feed/CommentItem";
+import ImmutablePropTypes from 'react-immutable-proptypes';
+
 const styles = theme => ({
     card: {
         maxWidth: 600,
@@ -15,7 +19,17 @@ const styles = theme => ({
     },
     likedStyle: {
         color: 'red',
-    }
+    },
+    expand: {
+        transform: 'rotate(0deg)',
+        transition: theme.transitions.create('transform', {
+            duration: theme.transitions.duration.shortest,
+        }),
+        marginLeft: 'auto',
+    },
+    expandOpen: {
+        transform: 'rotate(180deg)',
+    },
 });
 
 class FeedItem extends PureComponent {
@@ -24,58 +38,93 @@ class FeedItem extends PureComponent {
         super(props);
         this.state = {
             liked: props.liked,
+            expanded: false,
         }
     }
 
     componentWillReceiveProps(nextProps) {
-        this.setState({ liked: nextProps.liked })
+        this.setState({
+            ...this.state,
+            liked: nextProps.liked,
+        })
     }
 
-    handleLikeClick  = (itemId) => () => {
+    handleLikeClick = (itemId) => () => {
         this.props.onLikeClick(itemId);
     };
+
+    handleExpandClick = () => {
+        this.setState({
+            ...this.state,
+            expanded: !this.state.expanded,
+        })
+    }
 
     render() {
         const {
             id,
             title,
             photoUrl,
-            authorName,
-            authorAvatar,
+            author,
             postDate,
             description,
+            comments
         } = this.props;
         const {
             liked,
+            expanded
         } = this.state;
         const {
             card,
             media,
             likedStyle,
+            expandOpen,
+            expand,
         } = this.props.classes;
         return (
             <Card className={card}>
                 <CardHeader
                     avatar={
                         <Avatar
-                            alt={authorName}
-                            src={authorAvatar}/>
+                            alt={author.get('name')}
+                            src={author.get('avatar')}/>
                     }
                     title={title}
-                    subheader={authorName + '   |   ' + dateformat(postDate, 'fullDate')}/>
+                    subheader={author.get('name') + '   |   ' + dateformat(postDate, 'fullDate')}/>
                 <CardMedia
                     className={media}
-                    image={photoUrl}/>
+                    image={photoUrl} />
                 <CardContent>
                     <Typography>
                         {description}
                     </Typography>
                 </CardContent>
                 <CardActions>
-                    <IconButton className={cx(liked ? likedStyle : null)} onClick={this.handleLikeClick(id)} >
+                    <IconButton
+                        className={cx(liked ? likedStyle : null)}
+                        onClick={this.handleLikeClick(id)} >
                         <Favorite/>
                     </IconButton>
+                    <IconButton
+                        className={cx(expanded ? expandOpen : null, expand)}
+                        aria-expanded={this.state.expanded}
+                        onClick={this.handleExpandClick}>
+                        <ExpandMore/>
+                    </IconButton>
                 </CardActions>
+                <Collapse in={expanded} timeout='auto' unmountOnExit>
+                    <List>
+                        {
+                            comments.map(comment => (
+                                <CommentItem
+                                    key={comment.get('id')}
+                                    content={comment.get('content')}
+                                    author={comment.get('author')}
+                                />
+                            ))
+                        }
+                    </List>
+                </Collapse>
             </Card>
         );
     }
@@ -87,8 +136,7 @@ FeedItem.propTypes = {
   classes: PropTypes.object.isRequired,
   photoUrl: PropTypes.string.isRequired,
   liked: PropTypes.bool.isRequired,
-  authorName: PropTypes.string.isRequired,
-  authorAvatar: PropTypes.string.isRequired,
+  author: ImmutablePropTypes.Map,
   description: PropTypes.bool.isRequired,
   onLikeClick: PropTypes.func.isRequired,
 };

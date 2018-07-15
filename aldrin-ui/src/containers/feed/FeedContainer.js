@@ -27,10 +27,10 @@ class FeedContainer extends PureComponent {
                             title={item.get('title')}
                             photoUrl={item.get('url')}
                             liked={item.get('liked')}
+                            author={item.get('author')}
                             description={item.get('description')}
-                            authorName={item.getIn(['author', 'name'])}
-                            authorAvatar={item.getIn(['author', 'avatar'])}
                             onLikeClick={this.handleLikeClick}
+                            comments={item.get('comments')}
                         />
                     ))
                 }

@@ -10,6 +10,16 @@ export const feed = [
         description: ' since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets contain',
         url: 'https://www.planwallpaper.com/static/images/canberra_hero_image_JiMVvYU.jpg',
         liked: true,
+        comments: [
+            {
+                id: 101,
+                content: 'fake comment This impressive paella is a perfect party dish and a fun meal to cook together with your guests. Add 1 cup of frozen peas along ',
+                author: {
+                    name: 'Vickie Montgomery',
+                    avatar: 'https://i.imgur.com/w5mIBUV.jpg',
+                },
+            }
+        ],
     },
     {
         id: 2,
@@ -22,6 +32,16 @@ export const feed = [
         description: ' since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets contain',
         url: 'https://www.planwallpaper.com/static/images/canberra_hero_image_JiMVvYU.jpg',
         liked: false,
+        comments: [
+            {
+                id: 102,
+                content: 'fake comment',
+                author: {
+                    name: 'Michael Stevens',
+                    avatar: 'https://i.imgur.com/9rnJnmm.png'
+                }
+            }
+        ],
     },
     {
         id: 3,
@@ -34,5 +54,15 @@ export const feed = [
         description: 'This impressive paella is a perfect party dish and a fun meal to cook together with your guests. Add 1 cup of frozen peas along with the mussels, if you like.',
         url: 'https://www.planwallpaper.com/static/images/canberra_hero_image_JiMVvYU.jpg',
         liked: false,
+        comments: [
+            {
+                id: 103,
+                content: 'fake comment',
+                author: {
+                    name: 'Vickie Montgomery',
+                    avatar: 'https://i.imgur.com/w5mIBUV.jpg',
+                },
+            }
+        ],
     }
 ];

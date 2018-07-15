@@ -16,7 +16,8 @@ const styles = theme => ({
         display: 'flex',
     },
     drawerPaper: {
-        position: 'relative',
+        position: 'fixed',
+        height: '100%',
         whiteSpace: 'nowrap',
         width: drawerWidth,
         transition: theme.transitions.create('width', {
@@ -43,8 +44,8 @@ const styles = theme => ({
         ...theme.mixins.toolbar,
     },
     content: {
+        backgroundColor: '#EDEDED',
         flexGrow: 1,
-        backgroundColor: theme.palette.background.default,
         padding: theme.spacing.unit * 3,
     }
 });
