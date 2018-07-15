@@ -4,8 +4,11 @@
   "private": true,
   "dependencies": {
     "@material-ui/core": "latest",
+    "@material-ui/icons": "^1.1.0",
     "babel-plugin-transform-decorators-legacy": "^1.3.5",
+    "classnames": "^2.2.6",
     "connected-react-router": "^4.3.0",
+    "dateformat": "^3.0.3",
     "history": "^4.7.2",
     "immutable": "latest",
     "prop-types": "latest",
