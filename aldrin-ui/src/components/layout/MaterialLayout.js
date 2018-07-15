@@ -14,6 +14,7 @@ const styles = theme => ({
         overflow: 'hidden',
         position: 'relative',
         display: 'flex',
+        paddingTop: '3em',
     },
     drawerPaper: {
         position: 'fixed',

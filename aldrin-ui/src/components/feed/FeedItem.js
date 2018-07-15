@@ -11,7 +11,7 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 const styles = theme => ({
     card: {
         maxWidth: 600,
-        margin: '5em auto',
+        margin: '1em auto',
     },
     media: {
         height: 0,
@@ -136,8 +136,8 @@ FeedItem.propTypes = {
   classes: PropTypes.object.isRequired,
   photoUrl: PropTypes.string.isRequired,
   liked: PropTypes.bool.isRequired,
-  author: ImmutablePropTypes.Map,
-  description: PropTypes.bool.isRequired,
+  author: ImmutablePropTypes.map,
+  description: PropTypes.string.isRequired,
   onLikeClick: PropTypes.func.isRequired,
 };
 

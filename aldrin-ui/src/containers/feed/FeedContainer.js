@@ -40,7 +40,7 @@ class FeedContainer extends PureComponent {
 }
 
 FeedContainer.propTypes = {
-    items: ImmutablePropTypes.List,
+    items: ImmutablePropTypes.map,
     likePostItem: PropTypes.func.isRequired,
 };
 
