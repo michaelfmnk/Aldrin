@@ -37,7 +37,7 @@ module.exports = {
     devServer: {
         historyApiFallback: true,
         proxy: {
-            '/api': {
+            '/aldrin-api': {
                 target: 'http://localhost:8080',
                 changeOrigin: true,
                 cookieDomainRewrite: '',

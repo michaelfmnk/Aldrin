@@ -148,15 +148,16 @@ class FeedItem extends PureComponent {
 
 FeedItem.propTypes = {
     id: PropTypes.number.isRequired,
+    classes: PropTypes.object.isRequired, // eslint-disable-line
+    theme: PropTypes.object.isRequired, // eslint-disable-line
     title: PropTypes.string.isRequired,
-    classes: PropTypes.object.isRequired,
     photoUrl: PropTypes.string.isRequired,
     liked: PropTypes.bool.isRequired,
     author: ImmutablePropTypes.map,
     description: PropTypes.string.isRequired,
     onLikeClick: PropTypes.func.isRequired,
     postDate: PropTypes.string.isRequired,
-    comments: ImmutablePropTypes.map,
+    comments: ImmutablePropTypes.list,
 };
 
 export default withStyles(styles)(FeedItem);
