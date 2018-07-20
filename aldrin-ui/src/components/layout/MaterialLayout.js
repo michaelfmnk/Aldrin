@@ -1,4 +1,5 @@
 import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
 import { Drawer, IconButton, withStyles, List, ListItem, ListItemIcon, ListItemText } from '@material-ui/core';
 import TopBarContainer from 'components/layout/TopBar';
 import cx from 'classnames';
@@ -48,21 +49,27 @@ const styles = theme => ({
         backgroundColor: '#EDEDED',
         flexGrow: 1,
         padding: theme.spacing.unit * 3,
-    }
+    },
 });
 
 
 class MaterialLayout extends PureComponent {
+    static propTypes = {
+        classes: PropTypes.object.isRequired, // eslint-disable-line
+        theme: PropTypes.object.isRequired, // eslint-disable-line
+        children: PropTypes.node.isRequired,
+    };
+
     state = {
-        opened: false
+        opened: false,
     };
 
     handleDrawerOpen = () => {
-        this.setState({opened: true})
+        this.setState({ opened: true });
     };
 
     handleDrawerClose = () => {
-        this.setState({opened: false})
+        this.setState({ opened: false });
     };
 
     render() {
@@ -71,14 +78,15 @@ class MaterialLayout extends PureComponent {
             root,
             drawerPaper,
             drawerPaperClose,
-            toolbar
+            toolbar,
         } = this.props.classes;
         return (
             <div className={root}>
                 <TopBarContainer />
                 <Drawer
                     variant="permanent"
-                    classes={{paper : cx(drawerPaper, !this.state.opened && drawerPaperClose)}}>
+                    classes={{ paper: cx(drawerPaper, !this.state.opened && drawerPaperClose) }}
+                >
                     <div className={toolbar}>
                         <IconButton onClick={this.state.opened ? this.handleDrawerClose : this.handleDrawerOpen}>
                             {this.state.open ? <ChevronLeftIcon /> : <ChevronRightIcon />}
@@ -89,7 +97,8 @@ class MaterialLayout extends PureComponent {
                             getAsideMenu().map(item => (
                                 <ListItem
                                     key={item.path}
-                                    button>
+                                    button
+                                >
                                     <ListItemIcon>
                                         {item.icon}
                                     </ListItemIcon>

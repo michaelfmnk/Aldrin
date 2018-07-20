@@ -1,12 +1,24 @@
 import React, { PureComponent } from 'react';
-import { Card, CardMedia, CardHeader, Avatar, CardActions, IconButton, CardContent, Typography,
-    withStyles, Collapse, List } from '@material-ui/core';
+import {
+    Card,
+    CardMedia,
+    CardHeader,
+    Avatar,
+    CardActions,
+    IconButton,
+    CardContent,
+    Typography,
+    withStyles,
+    Collapse,
+    List,
+} from '@material-ui/core';
 import { Favorite, ExpandMore } from '@material-ui/icons';
 import PropTypes from 'prop-types';
 import dateformat from 'dateformat';
 import cx from 'classnames';
-import CommentItem from "components/feed/CommentItem";
+import CommentItem from 'components/feed/CommentItem';
 import ImmutablePropTypes from 'react-immutable-proptypes';
+
 
 const styles = theme => ({
     card: {
@@ -33,23 +45,22 @@ const styles = theme => ({
 });
 
 class FeedItem extends PureComponent {
-
     constructor(props) {
         super(props);
         this.state = {
             liked: props.liked,
             expanded: false,
-        }
+        };
     }
 
     componentWillReceiveProps(nextProps) {
         this.setState({
             ...this.state,
             liked: nextProps.liked,
-        })
+        });
     }
 
-    handleLikeClick = (itemId) => () => {
+    handleLikeClick = itemId => () => {
         this.props.onLikeClick(itemId);
     };
 
@@ -57,7 +68,7 @@ class FeedItem extends PureComponent {
         this.setState({
             ...this.state,
             expanded: !this.state.expanded,
-        })
+        });
     }
 
     render() {
@@ -68,11 +79,11 @@ class FeedItem extends PureComponent {
             author,
             postDate,
             description,
-            comments
+            comments,
         } = this.props;
         const {
             liked,
-            expanded
+            expanded,
         } = this.state;
         const {
             card,
@@ -87,13 +98,16 @@ class FeedItem extends PureComponent {
                     avatar={
                         <Avatar
                             alt={author.get('name')}
-                            src={author.get('avatar')}/>
+                            src={author.get('avatar')}
+                        />
                     }
                     title={title}
-                    subheader={author.get('name') + '   |   ' + dateformat(postDate, 'fullDate')}/>
+                    subheader={`${author.get('name')}   |   ${dateformat(postDate, 'fullDate')}`}
+                />
                 <CardMedia
                     className={media}
-                    image={photoUrl} />
+                    image={photoUrl}
+                />
                 <CardContent>
                     <Typography>
                         {description}
@@ -102,17 +116,19 @@ class FeedItem extends PureComponent {
                 <CardActions>
                     <IconButton
                         className={cx(liked ? likedStyle : null)}
-                        onClick={this.handleLikeClick(id)} >
-                        <Favorite/>
+                        onClick={this.handleLikeClick(id)}
+                    >
+                        <Favorite />
                     </IconButton>
                     <IconButton
                         className={cx(expanded ? expandOpen : null, expand)}
                         aria-expanded={this.state.expanded}
-                        onClick={this.handleExpandClick}>
-                        <ExpandMore/>
+                        onClick={this.handleExpandClick}
+                    >
+                        <ExpandMore />
                     </IconButton>
                 </CardActions>
-                <Collapse in={expanded} timeout='auto' unmountOnExit>
+                <Collapse in={expanded} timeout="auto" unmountOnExit>
                     <List>
                         {
                             comments.map(comment => (
@@ -131,14 +147,16 @@ class FeedItem extends PureComponent {
 }
 
 FeedItem.propTypes = {
-  id: PropTypes.number.isRequired,
-  title: PropTypes.string.isRequired,
-  classes: PropTypes.object.isRequired,
-  photoUrl: PropTypes.string.isRequired,
-  liked: PropTypes.bool.isRequired,
-  author: ImmutablePropTypes.map,
-  description: PropTypes.string.isRequired,
-  onLikeClick: PropTypes.func.isRequired,
+    id: PropTypes.number.isRequired,
+    title: PropTypes.string.isRequired,
+    classes: PropTypes.object.isRequired,
+    photoUrl: PropTypes.string.isRequired,
+    liked: PropTypes.bool.isRequired,
+    author: ImmutablePropTypes.map,
+    description: PropTypes.string.isRequired,
+    onLikeClick: PropTypes.func.isRequired,
+    postDate: PropTypes.string.isRequired,
+    comments: ImmutablePropTypes.map,
 };
 
 export default withStyles(styles)(FeedItem);

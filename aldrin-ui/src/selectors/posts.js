@@ -1,5 +1,4 @@
-
-import  { createSelector } from 'reselect'
+import { createSelector } from 'reselect';
 import { getUserEntities } from 'selectors/users';
 import { List } from 'immutable';
 import { getCommentEntities } from 'selectors/comments';
@@ -13,9 +12,11 @@ export const getFeedItems = createSelector(
     (posts, users, comments) =>
         posts
             .map(post => post.update('author', val => users.get(val.toString())))
-            .map(post => post.update('comments', ids => ids.reduce((res, id) => res.push(comments.get(id.toString())), List())))
-            .map(post => {
-                const newComments = post.get('comments').map(comment => comment.update('author', val => users.get(val.toString())));
+            .map(post => post.update('comments', ids =>
+                ids.reduce((res, id) => res.push(comments.get(id.toString())), List())))
+            .map((post) => {
+                const newComments = post.get('comments')
+                    .map(comment => comment.update('author', val => users.get(val.toString())));
                 return post.set('comments', newComments);
-            })
+            }),
 );

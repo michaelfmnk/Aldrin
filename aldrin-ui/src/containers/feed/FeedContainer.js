@@ -2,20 +2,19 @@ import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { getFeedItems } from 'selectors/posts';
-import FeedItem from "components/feed/FeedItem";
-import { likePostItem } from 'actions/feed';
+import FeedItem from 'components/feed/FeedItem';
+import { likePostItem, loadFeed } from 'actions/feed';
 import PropTypes from 'prop-types';
 
-
 class FeedContainer extends PureComponent {
-
-    handleLikeClick = itemId => {
+    handleLikeClick = (itemId) => {
         this.props.likePostItem(itemId);
+        this.props.loadFeed();
     };
 
     render() {
         const {
-            items
+            items,
         } = this.props;
         return (
             <div>
@@ -42,10 +41,11 @@ class FeedContainer extends PureComponent {
 FeedContainer.propTypes = {
     items: ImmutablePropTypes.map,
     likePostItem: PropTypes.func.isRequired,
+    loadFeed: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({
     items: getFeedItems(state),
 });
 
-export default connect(mapStateToProps, { likePostItem })(FeedContainer);
+export default connect(mapStateToProps, { likePostItem, loadFeed })(FeedContainer);

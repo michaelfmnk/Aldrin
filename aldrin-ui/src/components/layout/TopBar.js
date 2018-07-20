@@ -1,16 +1,21 @@
 import React, { PureComponent } from 'react';
 import { AppBar, Toolbar, Typography, withStyles } from '@material-ui/core';
 
-const styles = theme => ({
+const styles = () => ({
     menu: {
         position: 'absolute',
         left: '100px',
-    }
+    },
 });
 class TopBar extends PureComponent {
+    static propTypes = {
+        classes: PropTypes.object.isRequired, // eslint-disable-line
+        theme: PropTypes.object.isRequired, // eslint-disable-line
+    };
+
     render() {
         const {
-            menu
+            menu,
         } = this.props.classes;
         return (
             <AppBar position="absolute">

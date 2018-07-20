@@ -6,16 +6,14 @@ import { feed } from 'data/fakedata';
 const getDefaultState = () => {
     const user = new schema.Entity('users');
     const comment = new schema.Entity('comments', {
-        author: user
+        author: user,
     });
     const postArray = new schema.Array(new schema.Entity('posts', {
         author: user,
-        comments: [comment]
+        comments: [comment],
     }));
     return fromJS(normalize(feed, postArray).entities);
-}
-
-
+};
 
 
 export default function entitiesReducer(state = getDefaultState(), action) {
@@ -23,7 +21,7 @@ export default function entitiesReducer(state = getDefaultState(), action) {
         case LIKE_FEED_ITEM: {
             return state.updateIn(['posts', action.postId.toString(), 'liked'], val => !val);
         }
-        default:{
+        default: {
             return state;
         }
     }
