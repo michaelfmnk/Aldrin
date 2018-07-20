@@ -1,12 +1,16 @@
 package com.michaelfmnk.aldrin.entities;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity(name = "users")
 public class User {
     @Id
@@ -36,9 +40,9 @@ public class User {
 
     @OneToMany(fetch = FetchType.EAGER)
     @JoinTable(
-            name = "user_authorities",
+            name = "users_authorities",
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "userId"),
-            inverseJoinColumns = @JoinColumn(name = "authority_id", referencedColumnName = "id")
+            inverseJoinColumns = @JoinColumn(name = "authority_id", referencedColumnName = "authorityId")
     )
     private List<Authority> authorities;
 

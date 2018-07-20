@@ -14,11 +14,11 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PostDto implements Serializable {
-    private Integer postId;
+public class PostDto {
+    private Integer id;
     private String title;
     private LocalDateTime date;
-    private UserDto author;
-    private List<Comment> comments;
+    private Integer authorId;
+    private List<CommentDto> comments;
     private Integer likes;
 }

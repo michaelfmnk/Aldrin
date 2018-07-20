@@ -1,15 +1,19 @@
 package com.michaelfmnk.aldrin.entities;
 
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 
-@Entity(name = "authorities")
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity(name = "authorities")
 public class Authority {
     @Id
-    private Integer id;
-    private String auth;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer authorityId;
+    private String authorityName;
 }

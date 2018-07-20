@@ -6,6 +6,7 @@ import com.michaelfmnk.aldrin.dtos.params.PageSortParams;
 import com.michaelfmnk.aldrin.entities.Comment;
 import com.michaelfmnk.aldrin.entities.Post;
 import com.michaelfmnk.aldrin.entities.User;
+import com.michaelfmnk.aldrin.repositories.CommentRepository;
 import com.michaelfmnk.aldrin.repositories.PostRepository;
 import com.michaelfmnk.aldrin.repositories.UserRepository;
 import lombok.AllArgsConstructor;
@@ -16,6 +17,7 @@ import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import static java.lang.String.format;
 
@@ -23,37 +25,29 @@ import static java.lang.String.format;
 @AllArgsConstructor
 public class PostService {
     private final PostRepository postRepository;
-    //private final CommentRepository commentRepository;
     private final UserRepository userRepository;
     private final ConverterService converterService;
+    private final CommentRepository commentRepository;
 
-
-
+    // READY
     public PostDto findPostById(Integer id) {
         return postRepository.findById(id)
                 .map(converterService::toDto)
-                .orElseThrow(() -> new EntityNotFoundException(format("no post was found with postId=%s", id)));
-
+                .orElseThrow(() -> new EntityNotFoundException(format("no post was found with id=%s", id)));
     }
 
-    public PostDto updatePost(Integer id, PostDto postDto) {
-        return postRepository.findById(id)
-                .map(x -> {
-                    x.merge(postDto);
-                    return x;
-                })
-                .map(postRepository::save)
-                .map(converterService::toDto)
-                .orElseThrow(() -> new EntityNotFoundException(format("no post was found with post_id=%s", id)));
+    public PostDto updatePost(Integer postId, PostDto postDto) {
+        Post post = getValidPost(postId);
+        post.merge(postDto);
+        post = postRepository.save(post);
+        return converterService.toDto(post);
     }
 
-    public List<CommentDto> getCommentsForPost(Integer id, PageSortParams params) {
-        return null;
-    }
-
-    public List<PostDto> getFeed(String name, PageSortParams params) {
-      //  PageSortRequest pageable = new PageSortRequest(params.getOffset(), params.getLimit(), );
-        return null;
+    public void addLikeForPost(Integer postId, Integer userId) {
+        User user = userRepository.getOne(userId);
+        Post post = getValidPost(postId);
+        post.getLikes().add(user);
+        postRepository.save(post);
     }
 
     public void deleteLikeForPost(Integer postId, Integer userId) {
@@ -62,27 +56,27 @@ public class PostService {
         postRepository.save(post);
     }
 
-    public void addLikeForPost(Integer postId, Integer userId) {
-        User user = userRepository.getOne(userId);
-        postRepository.findById(postId)
-                .map(x -> {
-                    x.getLikes().add(user);
-                    return x;
-                })
-                .map(postRepository::save)
-                .orElseThrow(() -> new EntityNotFoundException());
-    }
-
     public PostDto addCommentToPost(Integer postId, Integer userId, CommentDto commentDto) {
         Comment comment = converterService.toEntity(commentDto, postId, userId);
-        Post post = postRepository.findById(postId)
-                .map(x -> {
-                    x.getComments().add(comment);
-                    return x;
-                })
-                .orElseThrow(() -> new EntityNotFoundException(format("no post was found with post_id=%s", postId)));
+        if (commentRepository.existsById(comment.getRepliedCommentId())) {
+            throw new EntityNotFoundException(""); //todo message provider
+        }
+        Post post = getValidPost(postId);
+        post.getComments().add(comment);
         post = postRepository.save(post);
         return converterService.toDto(post);
+    }
+
+    // TRASH
+    public List<CommentDto> getCommentsForPost(Integer id, PageSortParams params) {
+        return null;
+    }
+
+    public List<PostDto> getFeed(String name, PageSortParams params) {
+        List<Post> posts = postRepository.findPostByAuthor_FollowersUserId(1);
+        return posts.stream()
+                .map(converterService::toDto)
+                .collect(Collectors.toList());
     }
 
     private Post getValidPost(Integer postId) {

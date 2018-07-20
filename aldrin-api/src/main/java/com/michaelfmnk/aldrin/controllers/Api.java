@@ -5,6 +5,7 @@ public final class Api {
     private Api() {}
 
     public static final String ROOT_PATH = "/aldrin-api";
+    public static final String FEED = "/feed";
 
     public static final class Users {
         private Users() {}

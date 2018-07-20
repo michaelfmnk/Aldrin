@@ -7,8 +7,11 @@ spring:
         driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
         tomcat:
           driver-class-name: Con
+    jackson:
+        property-naming-strategy: SNAKE_CASE
     jpa:
         database-platform: org.hibernate.dialect.PostgreSQL9Dialect
+
 jwt:
   header: Authorization
   parameter: token

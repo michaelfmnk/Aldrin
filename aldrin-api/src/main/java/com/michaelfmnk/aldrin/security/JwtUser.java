@@ -1,6 +1,7 @@
 package com.michaelfmnk.aldrin.security;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Builder;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -8,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.Date;
 
+@Builder
 public class JwtUser implements UserDetails {
 
     private final Integer id;

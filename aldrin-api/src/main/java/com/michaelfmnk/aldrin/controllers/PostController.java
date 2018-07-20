@@ -24,81 +24,46 @@ import java.util.List;
 @RequestMapping(Api.ROOT_PATH)
 public class PostController {
 
-
-    private final PostRepository postRepository;
-    private final CommentRepository commentRepository;
-    private final UserRepository userRepository;
-
     private final PostService postService;
-
 
     @GetMapping(Api.Posts.POST_BY_ID)
     public PostDto getPostById(@PathVariable("post_id") Integer id){
         return postService.findPostById(id);
     }
 
-
     @PutMapping(Api.Posts.POST_BY_ID)
     public PostDto updatePost(@PathVariable("post_id") Integer id, @RequestBody PostDto postDto){
         return postService.updatePost(id, postDto);
     }
-
-
-//    @PostMapping("")
-//    public ResponseEntity<?> postPost(@RequestParam("file") MultipartFile file,
-//                                      @RequestPart("title") String title,
-//                                      Authentication authentication,
-//                                      RedirectAttributes redirectAttributes){
-//        Path path = storageService.store(file);
-//        User user = userRepository.findUserByUsername(authentication.getName());
-//        Photo photo = new Photo();
-//        Post post = new Post();
-//        photo.setUrl(path.toString()); //setting url to uploaded image
-//        post.setTitle(title);
-//        post.setAuthor(user);
-//
-//        post.setPhoto(photo);  //setting relations between post and photo
-//        photo.setPost(post);
-//        postRepository.save(post);
-//
-//        return ResponseEntity.ok(post);
-//
-//    }
-
 
     @GetMapping(Api.Posts.POST_COMMENTS)
     public List<CommentDto> getComments(@PathVariable("post_id") Integer postId, @ModelAttribute PageSortParams params){
         return postService.getCommentsForPost(postId, params);
     }
 
-
     @PostMapping(Api.Posts.POST_COMMENTS)
-    public PostDto postComment(@PathVariable("post_id") Integer postId,
-                                         @RequestBody @Valid CommentDto commentDto,
-                                         Authentication auth){
+    public PostDto postComment(@PathVariable("post_id") Integer postId, @RequestBody @Valid CommentDto commentDto,
+                               Authentication auth){
+        Integer userId = getUserIdFromAuthentication(auth);
         commentDto = commentDto.toBuilder()
-                .userId(getUserIdFromAuthentication(auth))
+                .userId(userId)
                 .postId(postId)
                 .build();
-        return postService.addCommentToPost(postId, commentDto);
+        return postService.addCommentToPost(postId,  userId, commentDto);
     }
 
 
-    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(Api.Posts.POST_LIKES)
-    public void setLike(@PathVariable("post_id") Integer id,
-                                     Authentication auth){
+    @ResponseStatus(HttpStatus.CREATED)
+    public void setLike(@PathVariable("post_id") Integer id, Authentication auth){
         postService.addLikeForPost(id, getUserIdFromAuthentication(auth));
     }
 
-
-    @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping(Api.Posts.POST_LIKES)
-    public void deleteLike(@PathVariable("post_id") Integer id,
-                                        Authentication auth){
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteLike(@PathVariable("post_id") Integer id, Authentication auth){
         postService.deleteLikeForPost(id, getUserIdFromAuthentication(auth));
     }
-
 
     private Integer getUserIdFromAuthentication(Authentication auth) {
         return ((JwtUser) auth.getPrincipal()).getId();

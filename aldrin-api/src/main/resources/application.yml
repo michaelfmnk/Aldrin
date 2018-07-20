@@ -8,8 +8,8 @@ spring:
   datasource:
     platform: postgres
     username: postgres
-    password: admin
-    url: jdbc:postgresql://localhost:5432/Instaspring
+    password: postgres
+    url: jdbc:postgresql://localhost:5432/aldrin
     driver-class-name: org.postgresql.Driver
     tomcat:
       test-on-borrow: true

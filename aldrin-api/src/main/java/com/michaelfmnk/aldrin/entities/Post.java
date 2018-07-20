@@ -2,7 +2,9 @@ package com.michaelfmnk.aldrin.entities;
 
 
 import com.michaelfmnk.aldrin.dtos.PostDto;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
@@ -10,8 +12,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 
-@Entity(name = "posts")
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity(name = "posts")
 public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,6 +30,7 @@ public class Post {
     private User author;
 
     @OneToMany(mappedBy = "post")
+    @OrderBy("date DESC")
     private List<Comment> comments;
 
     @OneToMany

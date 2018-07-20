@@ -43,8 +43,7 @@ public class AuthenticationRestController {
 
     @PostMapping("")
     public ResponseEntity<?> createAuthenticationToken(
-            @RequestBody JwtAuthenticationRequest request,
-            Device device) throws Exception{
+            @RequestBody JwtAuthenticationRequest request) throws Exception{
 
         final Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -54,7 +53,7 @@ public class AuthenticationRestController {
         );
         SecurityContextHolder.getContext().setAuthentication(authentication);
         final UserDetails userDetails = userDetailsService.loadUserByUsername(request.getUsername());
-        final String token = jwtTokenUtil.generateToken(userDetails, device);
+        final String token = jwtTokenUtil.generateToken(userDetails);
         return ResponseEntity.ok(new JwtAuthenticationResponse(token));
     }
 

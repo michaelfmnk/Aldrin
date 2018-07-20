@@ -2,6 +2,7 @@ package com.michaelfmnk.aldrin.services;
 
 
 import com.michaelfmnk.aldrin.dtos.UserDto;
+import com.michaelfmnk.aldrin.entities.User;
 import com.michaelfmnk.aldrin.repositories.UserRepository;
 import com.michaelfmnk.aldrin.security.JwtUserFactory;
 import lombok.AllArgsConstructor;
@@ -25,14 +26,20 @@ public class UserService implements UserDetailsService {
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
         return userRepository.findUserByUsername(s)
                 .map(JwtUserFactory::create)
-                .orElseThrow(() -> new EntityNotFoundException(format("no user was found with commentId=%s", s)));
+                .orElseThrow(() -> new EntityNotFoundException(format("no user was found with id=%s", s)));
 
     }
 
     public UserDto findUserByUsername(String username) {
         return userRepository.findUserByUsername(username)
                 .map(converterService::toDto)
-                .orElseThrow(() -> new EntityNotFoundException(format("no user found with commentId=%s", username)));
+                .orElseThrow(() -> new EntityNotFoundException(format("no user found with id=%s", username)));
     }
+
+    public User findUserById(Integer id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(format("no user found with id=%s", id)));
+    }
+
 
 }

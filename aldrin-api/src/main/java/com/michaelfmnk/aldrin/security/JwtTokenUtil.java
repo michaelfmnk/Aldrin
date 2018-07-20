@@ -15,6 +15,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
+
 @Component
 public class JwtTokenUtil implements Serializable {
 
@@ -56,6 +57,10 @@ public class JwtTokenUtil implements Serializable {
         return getClaimFromToken(token, Claims::getSubject);
     }
 
+
+    public Integer getUserIdFromToken(String token) {
+        return Integer.valueOf(getClaimFromToken(token, Claims::getId));
+    }
 
     /**
      * @param token jwt-token
@@ -150,12 +155,11 @@ public class JwtTokenUtil implements Serializable {
      * Uses private method createToken() to generate new JWT-Token
      * Passes username & audience (as string) to createToken()
      * @param userDetails JwtUser
-     * @param device info
      * @return String - jwt-token
      */
-    public String generateToken(UserDetails userDetails, Device device) {
+    public String generateToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
-        return createToken(claims, userDetails.getUsername(), generateAudience(device));
+        return createToken(claims, userDetails.getUsername());
     }
 
 
@@ -168,17 +172,15 @@ public class JwtTokenUtil implements Serializable {
      *
      * @param claims
      * @param subject username
-     * @param audience
      * @return String jwt-token
      */
-    private String createToken(Map<String, Object> claims, String subject, String audience) {
+    private String createToken(Map<String, Object> claims, String subject) {
         final Date createdDate = timeProvider.now();
         final Date expirationDate = calculateExpirationDate(createdDate);
         System.out.println("createToken " + createdDate);
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(subject)
-                .setAudience(audience)
                 .setIssuedAt(createdDate)
                 .setExpiration(expirationDate)
                 .signWith(SignatureAlgorithm.HS512, secret)
@@ -194,24 +196,6 @@ public class JwtTokenUtil implements Serializable {
      */
     private Date calculateExpirationDate(Date createdDate) {
         return new Date(createdDate.getTime() + expiration * 1000);
-    }
-
-
-    /**
-     * Returns type name of the client's device
-     * @param device client's device info
-     * @return String - type name
-     */
-    private String generateAudience(Device device) {
-        String audience = "";
-        if (device.isNormal()){
-            audience = AUDIENCE_WEB;
-        } else if (device.isMobile()){
-            audience = AUDIENCE_MOBILE;
-        } else if (device.isTablet()){
-            audience = AUDIENCE_TABLET;
-        }
-        return audience;
     }
 
 

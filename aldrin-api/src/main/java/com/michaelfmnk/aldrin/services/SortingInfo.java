@@ -1,6 +1,6 @@
 package com.michaelfmnk.aldrin.services;
 
-import com.sun.tools.javac.util.StringUtils;
+
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 
@@ -23,7 +23,7 @@ public class SortingInfo {
         if (Objects.isNull(key) || Objects.isNull(val)) {
             throw new IllegalArgumentException();
         }
-        mappings.put(StringUtils.toLowerCase(key), val);
+        mappings.put(key.toLowerCase(), val); //todo
         return this;
     }
 

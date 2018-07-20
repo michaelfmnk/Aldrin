@@ -9,13 +9,17 @@ import com.michaelfmnk.aldrin.entities.User;
 import com.michaelfmnk.aldrin.validation.IfNullReturnNull;
 import org.springframework.stereotype.Service;
 
+import java.util.stream.Collectors;
+
+import static org.apache.commons.collections4.CollectionUtils.emptyIfNull;
+
 @Service
 public class ConverterService {
 
     @IfNullReturnNull
     public CommentDto toDto(Comment entity) {
         return CommentDto.builder()
-                .commentId(entity.getCommentId())
+                .id(entity.getCommentId())
                 .content(entity.getContent())
                 .date(entity.getDate())
                 .postId(entity.getPostId())
@@ -26,10 +30,17 @@ public class ConverterService {
     @IfNullReturnNull
     public PostDto toDto(Post entity) {
         return PostDto.builder()
-                .postId(entity.getPostId())
+                .id(entity.getPostId())
                 .title(entity.getTitle())
                 .date(entity.getDate())
-                .author(toDto(entity.getAuthor()))
+                .authorId(entity.getAuthor().getUserId())
+                .comments(
+                        emptyIfNull(entity.getComments())
+                                .stream()
+                                .map(this::toDto)
+                                .collect(Collectors.toList())
+                )
+                .likes(emptyIfNull(entity.getLikes()).size())
                 .build();
     }
 
@@ -47,9 +58,11 @@ public class ConverterService {
     @IfNullReturnNull
     public Comment toEntity(CommentDto commentDto, Integer postId, Integer userId) {
         return Comment.builder()
-                .commentId(commentDto.getCommentId())
+                .commentId(commentDto.getId())
+                .repliedCommentId(commentDto.getRepliedCommentId())
+                .content(commentDto.getContent())
                 .userId(userId)
-                
+                .postId(postId)
                 .build();
     }
 }

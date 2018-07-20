@@ -18,14 +18,14 @@ public class CommentService {
 
     public void deleteCommentById(Integer id) {
         if(!commentRepository.existsById(id)) {
-            throw new EntityNotFoundException(format("no comment was found with commentId=%s", id));
+            throw new EntityNotFoundException(format("no comment was found with id=%s", id));
         }
         commentRepository.deleteById(id);
     }
 
     public CommentDto getCommentById(Integer id) {
         Comment comment = commentRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(format("no comment was found with commentId=%s", id)));
+                .orElseThrow(() -> new EntityNotFoundException(format("no comment was found with id=%s", id)));
         return converterService.toDto(comment);
     }
 }
