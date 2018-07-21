@@ -6,7 +6,6 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.AllArgsConstructor;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
@@ -22,6 +21,7 @@ public class JwtTokenUtil implements Serializable {
     static final String CLAIM_KEY_USERNAME = "sub";
     static final String CLAIM_KEY_AUDIENCE = "aud";
     static final String CLAIM_KEY_CREATED = "iat";
+    static final String CLAIN_KEY_ID = "jti";
 
     static final String AUDIENCE_UNKNOWN = "unknown";
     static final String AUDIENCE_WEB = "web";
@@ -102,8 +102,8 @@ public class JwtTokenUtil implements Serializable {
      * @param userDetails JwtUser
      * @return true if token is valid, false - not valid
      */
-    public Boolean validateToken(String token, UserDetails userDetails) {
-        JwtUser jwtUser = (JwtUser) userDetails;
+    public Boolean validateToken(String token, JwtUser userDetails) {
+        JwtUser jwtUser = userDetails;
         final String username = getUsernameFromToken(token);
         final Date created = getIssuedAtDateFromToken(token);
         return (
@@ -137,12 +137,12 @@ public class JwtTokenUtil implements Serializable {
     /**
      * Uses private method createToken() to generate new JWT-Token
      * Passes username & audience (as string) to createToken()
-     * @param userDetails JwtUser
+     * @param jwtUser JwtUser
      * @return String - jwt-token
      */
-    public String generateToken(UserDetails userDetails) {
-        Map<String, Object> claims = new HashMap<>();
-        return createToken(claims, userDetails.getUsername());
+    public String generateToken(JwtUser jwtUser) {
+        Map<String, Object> claims = generateClaims(jwtUser);
+        return createToken(claims, jwtUser.getUsername());
     }
 
 
@@ -237,5 +237,11 @@ public class JwtTokenUtil implements Serializable {
                 .setClaims(claims)
                 .signWith(SignatureAlgorithm.HS512, authProperties.getSecret())
                 .compact();
+    }
+
+    private Map<String, Object> generateClaims(JwtUser jwtUser) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put(CLAIN_KEY_ID, jwtUser.getId());
+        return claims;
     }
 }

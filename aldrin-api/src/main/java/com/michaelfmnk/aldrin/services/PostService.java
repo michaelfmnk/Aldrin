@@ -41,7 +41,7 @@ public class PostService {
     }
 
     public void addLikeForPost(Integer postId, Integer userId) {
-        User user = userService.findUserById(userId);
+        User user = userService.findValidUserById(userId);
         Post post = getValidPost(postId);
 
         user = post.getLikes()

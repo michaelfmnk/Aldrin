@@ -1,14 +1,11 @@
 package com.michaelfmnk.aldrin.security;
 
 import com.michaelfmnk.aldrin.props.AuthProperties;
+import com.michaelfmnk.aldrin.services.UserService;
 import io.jsonwebtoken.ExpiredJwtException;
 import lombok.AllArgsConstructor;
 import lombok.extern.apachecommons.CommonsLog;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -17,14 +14,15 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Objects;
 
-@CommonsLog
 @Component
+@CommonsLog
 @AllArgsConstructor
 public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
 
     private JwtTokenUtil jwtTokenUtil;
-    private UserDetailsService userDetailsService;
+    private UserService userService;
     private AuthProperties authProperties;
 
     @Override
@@ -32,29 +30,25 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
                                     HttpServletResponse httpServletResponse,
                                     FilterChain filterChain) throws ServletException, IOException {
         final String authToken = httpServletRequest.getHeader(authProperties.getHeaderName());
-        String username = null;
+
+        Integer userId = null;
         logger.info(authToken);
 
         try {
-            username = jwtTokenUtil.getUsernameFromToken(authToken);
+            userId = jwtTokenUtil.getUserIdFromToken(authToken);
         } catch (IllegalArgumentException e) {
-            logger.error("an error occurred during getting username from token", e);
+            logger.error("an error occurred during getting user_id from token", e);
         } catch (ExpiredJwtException e) {
             logger.warn("the token is expired and not valid anymore", e);
         }
 
-        logger.info("checking authentication for user " + username);
-        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
+        logger.info(String.format("checking authentication for user_id=%s", userId));
+        if (Objects.nonNull(userId) && Objects.isNull(SecurityContextHolder.getContext().getAuthentication())) {
+            JwtUser userDetails = JwtUserFactory.create(userService.findValidUserById(userId));
             if (jwtTokenUtil.validateToken(authToken, userDetails)) {
-                UsernamePasswordAuthenticationToken authenticationToken
-                        = new UsernamePasswordAuthenticationToken(userDetails,
-                        null,
-                        userDetails.getAuthorities());
-                authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpServletRequest));
-                logger.info("authenticated user " + username + ", setting security context");
-                SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-
+                UserAuthentication authentication = new UserAuthentication(userDetails);
+                logger.info(String.format("authenticated user %s, setting security context", userId));
+                SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         }
 

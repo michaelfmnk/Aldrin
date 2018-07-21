@@ -9,25 +9,28 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static org.apache.commons.collections4.CollectionUtils.emptyIfNull;
+
 public class JwtUserFactory {
     private JwtUserFactory(){}
 
     public static JwtUser create(User user){
-        return new JwtUser(
-                user.getUserId(),
-                user.getUsername(),
-                user.getFirstName(),
-                user.getLastName(),
-                user.getPassword(),
-                user.getEmail(),
-                mapToGrantedAuthorities(user.getAuthorities()),
-                true,
-                user.getLastPasswordResetDate()
-        );
+        return JwtUser.builder()
+                .id(user.getUserId())
+                .username(user.getUsername())
+                .firstname(user.getFirstName())
+                .lastname(user.getLastName())
+                .password(user.getPassword())
+                .email(user.getEmail())
+                .enabled(true)
+                .lastPasswordResetDate(user.getLastPasswordResetDate())
+                .authorities(mapToGrantedAuthorities(user.getAuthorities()))
+                .build();
     }
 
     private static List<GrantedAuthority> mapToGrantedAuthorities(List<Authority> authorities) {
-        return authorities.stream()
+        return emptyIfNull(authorities)
+                .stream()
                 .map(authority -> new SimpleGrantedAuthority(authority.getAuthorityName()))
                 .collect(Collectors.toList());
     }

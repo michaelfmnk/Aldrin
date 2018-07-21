@@ -27,19 +27,20 @@ public class UserService implements UserDetailsService {
         return userRepository.findUserByUsername(s)
                 .map(JwtUserFactory::create)
                 .orElseThrow(() -> new EntityNotFoundException(format("no user was found with id=%s", s)));
-
     }
 
     public UserDto findUserByUsername(String username) {
-        return userRepository.findUserByUsername(username)
-                .map(converterService::toDto)
-                .orElseThrow(() -> new EntityNotFoundException(format("no user found with id=%s", username)));
+        return converterService.toDto(findValidUserByUsername(username));
     }
 
-    public User findUserById(Integer id) {
+    public User findValidUserById(Integer id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(format("no user found with id=%s", id)));
     }
 
 
+    public User findValidUserByUsername(String username) {
+        return userRepository.findUserByUsername(username)
+                .orElseThrow(() -> new EntityNotFoundException(format("no user found with id=%s", username)));
+    }
 }

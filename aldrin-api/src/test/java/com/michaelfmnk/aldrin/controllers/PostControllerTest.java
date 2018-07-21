@@ -80,6 +80,23 @@ public class PostControllerTest extends BaseTest {
                 .value("title").isEqualTo("new title");
     }
 
+
+    @Test
+    public void shouldNotBeAbleToEditNotOwnPost() throws JsonProcessingException {
+        PostDto updatedPost = PostDto.builder()
+                .title("new title")
+                .build();
+        given()
+                .accept(ContentType.JSON)
+                .contentType(ContentType.JSON)
+                .headers(headers)
+                .body(objectMapper.writeValueAsBytes(updatedPost))
+                .when()
+                .put("/aldrin-api/posts/3")
+                .then()
+                .statusCode(HttpStatus.SC_FORBIDDEN);
+    }
+
     @Test
     public void shouldLikeDislike() {
         given()

@@ -8,13 +8,12 @@ import com.michaelfmnk.aldrin.props.AuthProperties;
 import com.michaelfmnk.aldrin.repositories.UserRepository;
 import com.michaelfmnk.aldrin.security.JwtTokenUtil;
 import com.michaelfmnk.aldrin.security.JwtUser;
+import com.michaelfmnk.aldrin.security.JwtUserFactory;
 import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -26,11 +25,11 @@ public class AuthService {
 
     private final AuthProperties authProperties;
     private final AuthenticationManager authenticationManager;
-    private final UserDetailsService userDetailsService;
     private final UserRepository userRepository;
     private final JwtTokenUtil jwtTokenUtil;
     private final PasswordEncoder passwordEncoder;
     private final MessagesService messagesService;
+    private final UserService userService;
 
     public TokenContainer createToken(AuthRequest request) {
         final Authentication authentication = authenticationManager.authenticate(
@@ -41,8 +40,9 @@ public class AuthService {
         );
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        final UserDetails userDetails = userDetailsService.loadUserByUsername(request.getUsername());
-        final String token = jwtTokenUtil.generateToken(userDetails);
+        User user = userService.findValidUserByUsername(request.getUsername());
+        final JwtUser jwtUser = JwtUserFactory.create(user);
+        final String token = jwtTokenUtil.generateToken(jwtUser);
         return new TokenContainer(token);
     }
 
@@ -60,7 +60,7 @@ public class AuthService {
     public TokenContainer refreshToken(HttpServletRequest request) {
         String token = request.getHeader(authProperties.getHeaderName());
         String username = jwtTokenUtil.getUsernameFromToken(token);
-        JwtUser user = (JwtUser) userDetailsService.loadUserByUsername(username);
+        User user = userService.findValidUserByUsername(username);
 
         if (jwtTokenUtil.canTokenBeRefreshed(token, user.getLastPasswordResetDate())) {
             String refreshedToken = jwtTokenUtil.refreshToken(token);

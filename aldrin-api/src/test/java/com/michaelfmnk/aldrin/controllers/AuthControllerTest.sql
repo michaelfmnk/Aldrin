@@ -5,6 +5,13 @@ VALUES
 (2, 'broo', 'Nick', 'Brown', '$2a$10$noFrZfy.dxossQlZ4WqX2.U66nRVUeGkjQtNFP7298bcqKmd.amsK', '2007-07-16 14:40:14.518000', 'someoneelse@gmail.com'); --test
 
 
+INSERT INTO users_authorities
+(user_id, authority_id)
+VALUES
+(1, 2),
+(2, 2);
+
+
 INSERT INTO posts
 (post_id, title, "date", user_id)
 VALUES
