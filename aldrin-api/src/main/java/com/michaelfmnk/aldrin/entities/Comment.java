@@ -1,9 +1,11 @@
 package com.michaelfmnk.aldrin.entities;
 
+import com.michaelfmnk.aldrin.services.SortingInfo;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.domain.Sort;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -15,6 +17,11 @@ import java.util.Optional;
 @AllArgsConstructor
 @Entity(name = "comments")
 public class Comment {
+
+    public static final String DATE = "date";
+    public static final String DEFAULT_SORT = DATE;
+    public static SortingInfo SORTING_INFO = new SortingInfo(DEFAULT_SORT);
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer commentId;
@@ -47,4 +54,5 @@ public class Comment {
     public Optional<Comment> getRepliedComment() {
         return Optional.ofNullable(this.repliedComment);
     }
+
 }

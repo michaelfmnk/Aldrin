@@ -31,4 +31,13 @@ public class SortingInfo {
         Direction direction = asc ? ASC : DESC;
         return new Sort(direction, mappings.getOrDefault(key, defaultValue));
     }
+
+    public Sort getDefaultSort(boolean asc) {
+        Direction direction = asc ? ASC : DESC;
+        return new Sort(direction, mappings.getOrDefault(null, defaultValue));
+    }
+
+    public Sort getDefaultSort() {
+        return getDefaultSort(true);
+    }
 }

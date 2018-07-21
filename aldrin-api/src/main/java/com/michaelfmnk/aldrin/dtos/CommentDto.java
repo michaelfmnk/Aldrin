@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 @Data
 @Builder(toBuilder = true)
-public class CommentDto implements Serializable {
+public class CommentDto {
     private Integer id;
     private String content;
     private LocalDateTime date;

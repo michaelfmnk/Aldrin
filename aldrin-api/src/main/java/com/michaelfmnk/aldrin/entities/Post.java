@@ -10,6 +10,7 @@ import org.hibernate.validator.constraints.Length;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 
 @Data
@@ -33,13 +34,13 @@ public class Post {
     @OrderBy("date DESC")
     private List<Comment> comments;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinTable(
             name = "likes",
             joinColumns = @JoinColumn(name = "post_id", referencedColumnName = "postId"),
             inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "userId")
     )
-    private List<User> likes;
+    private Set<User> likes;
 
     public void merge(PostDto dto) {
         this.title = dto.getTitle();

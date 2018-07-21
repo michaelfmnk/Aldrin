@@ -12,7 +12,7 @@ import org.apache.logging.log4j.util.Strings;
 @AllArgsConstructor
 public class PageSortParams {
     private int offset = 0;
-    private int limit = 0;
+    private int limit = 10;
     private String sort = Strings.EMPTY;
     private boolean asc = false;
 }

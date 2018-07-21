@@ -117,8 +117,13 @@
 			<artifactId>commons-collections4</artifactId>
 			<version>4.0</version>
 		</dependency>
-
-	</dependencies>
+        <!-- https://mvnrepository.com/artifact/org.assertj/assertj-db -->
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-db</artifactId>
+            <version>1.2.0</version>
+        </dependency>
+    </dependencies>
 
 	<build>
 		<testResources>

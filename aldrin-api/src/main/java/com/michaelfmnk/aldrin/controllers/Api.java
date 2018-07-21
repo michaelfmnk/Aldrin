@@ -18,7 +18,7 @@ public final class Api {
         private Posts() {}
         public static final String POSTS = "/posts";
         public static final String POST_BY_ID = "/posts/{post_id}";
-        public static final String POST_COMMENTS = "/posts/{post_id}/comments";
+        public static final String COMMENTS = "/posts/{post_id}/comments";
         public static final String POST_LIKES = "/posts/{post_id}/likes";
     }
 

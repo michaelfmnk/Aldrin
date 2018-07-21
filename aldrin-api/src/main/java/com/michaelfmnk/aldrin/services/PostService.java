@@ -1,20 +1,23 @@
 package com.michaelfmnk.aldrin.services;
 
 import com.michaelfmnk.aldrin.dtos.CommentDto;
+import com.michaelfmnk.aldrin.dtos.Pagination;
 import com.michaelfmnk.aldrin.dtos.PostDto;
 import com.michaelfmnk.aldrin.dtos.params.PageSortParams;
+import com.michaelfmnk.aldrin.dtos.params.PageSortRequest;
 import com.michaelfmnk.aldrin.entities.Comment;
 import com.michaelfmnk.aldrin.entities.Post;
 import com.michaelfmnk.aldrin.entities.User;
 import com.michaelfmnk.aldrin.repositories.CommentRepository;
 import com.michaelfmnk.aldrin.repositories.PostRepository;
 import com.michaelfmnk.aldrin.repositories.UserRepository;
+
 import lombok.AllArgsConstructor;
-import org.springframework.http.ResponseEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
-import javax.validation.Valid;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -26,10 +29,12 @@ import static java.lang.String.format;
 public class PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
+    private final UserService userService;
     private final ConverterService converterService;
     private final CommentRepository commentRepository;
 
-    // READY
+    //
+
     public PostDto findPostById(Integer id) {
         return postRepository.findById(id)
                 .map(converterService::toDto)
@@ -44,8 +49,15 @@ public class PostService {
     }
 
     public void addLikeForPost(Integer postId, Integer userId) {
-        User user = userRepository.getOne(userId);
+        User user = userService.findUserById(userId);
         Post post = getValidPost(postId);
+
+        user = post.getLikes()
+                .stream()
+                .filter(whoLiked -> Objects.equals(whoLiked.getUserId(), userId))
+                .findFirst()
+                .orElse(user);
+
         post.getLikes().add(user);
         postRepository.save(post);
     }
@@ -67,11 +79,19 @@ public class PostService {
         return converterService.toDto(post);
     }
 
-    // TRASH
-    public List<CommentDto> getCommentsForPost(Integer id, PageSortParams params) {
-        return null;
+    public Pagination<CommentDto> getCommentsForPost(Integer id, PageSortParams params) {
+        Pageable pageable = new PageSortRequest(params.getOffset(), params.getLimit(),
+                Comment.SORTING_INFO.getDefaultSort(false));
+        failIfPostIdNotValid(id);
+        Page<Comment> commentsPage = commentRepository.findByPostId(id, pageable);
+        List<CommentDto> data = commentsPage.getContent()
+                .stream()
+                .map(converterService::toDto)
+                .collect(Collectors.toList());
+        return new Pagination<>(data, commentsPage.getTotalElements());
     }
 
+    // TRASH
     public List<PostDto> getFeed(String name, PageSortParams params) {
         List<Post> posts = postRepository.findPostByAuthor_FollowersUserId(1);
         return posts.stream()
@@ -81,6 +101,11 @@ public class PostService {
 
     private Post getValidPost(Integer postId) {
         return postRepository.findById(postId)
+                .orElseThrow(() -> new EntityNotFoundException(format("no post was found with post_id=%s", postId)));
+    }
+
+    private void failIfPostIdNotValid(Integer postId) {
+        postRepository.findById(postId)
                 .orElseThrow(() -> new EntityNotFoundException(format("no post was found with post_id=%s", postId)));
     }
 }

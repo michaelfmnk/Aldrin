@@ -2,17 +2,13 @@ package com.michaelfmnk.aldrin.controllers;
 
 
 import com.michaelfmnk.aldrin.dtos.CommentDto;
+import com.michaelfmnk.aldrin.dtos.Pagination;
 import com.michaelfmnk.aldrin.dtos.PostDto;
 import com.michaelfmnk.aldrin.dtos.params.PageSortParams;
-import com.michaelfmnk.aldrin.entities.Comment;
-import com.michaelfmnk.aldrin.repositories.CommentRepository;
-import com.michaelfmnk.aldrin.repositories.PostRepository;
-import com.michaelfmnk.aldrin.repositories.UserRepository;
 import com.michaelfmnk.aldrin.security.JwtUser;
 import com.michaelfmnk.aldrin.services.PostService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,23 +32,6 @@ public class PostController {
         return postService.updatePost(id, postDto);
     }
 
-    @GetMapping(Api.Posts.POST_COMMENTS)
-    public List<CommentDto> getComments(@PathVariable("post_id") Integer postId, @ModelAttribute PageSortParams params){
-        return postService.getCommentsForPost(postId, params);
-    }
-
-    @PostMapping(Api.Posts.POST_COMMENTS)
-    public PostDto postComment(@PathVariable("post_id") Integer postId, @RequestBody @Valid CommentDto commentDto,
-                               Authentication auth){
-        Integer userId = getUserIdFromAuthentication(auth);
-        commentDto = commentDto.toBuilder()
-                .userId(userId)
-                .postId(postId)
-                .build();
-        return postService.addCommentToPost(postId,  userId, commentDto);
-    }
-
-
     @PostMapping(Api.Posts.POST_LIKES)
     @ResponseStatus(HttpStatus.CREATED)
     public void setLike(@PathVariable("post_id") Integer id, Authentication auth){
@@ -64,6 +43,25 @@ public class PostController {
     public void deleteLike(@PathVariable("post_id") Integer id, Authentication auth){
         postService.deleteLikeForPost(id, getUserIdFromAuthentication(auth));
     }
+
+    @GetMapping(Api.Posts.COMMENTS)
+    public Pagination<CommentDto> getComments(@PathVariable("post_id") Integer postId, @ModelAttribute PageSortParams params){
+        return postService.getCommentsForPost(postId, params);
+    }
+
+    @PostMapping(Api.Posts.COMMENTS)
+    public PostDto postComment(@PathVariable("post_id") Integer postId, @RequestBody @Valid CommentDto commentDto,
+                               Authentication auth){
+        Integer userId = getUserIdFromAuthentication(auth);
+        commentDto = commentDto.toBuilder()
+                .userId(userId)
+                .postId(postId)
+                .build();
+        return postService.addCommentToPost(postId,  userId, commentDto);
+    }
+
+
+
 
     private Integer getUserIdFromAuthentication(Authentication auth) {
         return ((JwtUser) auth.getPrincipal()).getId();

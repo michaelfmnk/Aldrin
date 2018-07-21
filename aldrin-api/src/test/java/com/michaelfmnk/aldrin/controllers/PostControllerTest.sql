@@ -8,7 +8,8 @@ VALUES
 INSERT INTO posts
 (post_id, title, "date", user_id)
 VALUES
-(1, 'POST-TITLE-1', '2010-07-16 17:20:14.518000', 1);
+(1, 'POST-TITLE-1', '2010-07-16 17:20:14.518000', 1),
+(2, 'POST-TITLE-2', '2014-07-16 17:20:14.518000', 1);
 
 
 INSERT INTO comments
