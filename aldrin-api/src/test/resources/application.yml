@@ -12,15 +12,10 @@ spring:
     jpa:
         database-platform: org.hibernate.dialect.PostgreSQL9Dialect
 
-jwt:
-  header: Authorization
-  parameter: token
-  secret: mySecret
-  expiration: 604800
-  route:
-    authentication:
-      path: auth
-      refresh: refresh
-    singup: singup
 storage:
   location: upload-dir
+
+auth:
+  secret: mySecret
+  expiration: 604800
+  headerName: Authorization

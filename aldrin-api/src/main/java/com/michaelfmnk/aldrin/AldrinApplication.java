@@ -1,5 +1,6 @@
 package com.michaelfmnk.aldrin;
 
+import com.michaelfmnk.aldrin.props.AuthProperties;
 import com.michaelfmnk.aldrin.storage.StorageProperties;
 import com.michaelfmnk.aldrin.storage.StorageService;
 import org.springframework.boot.CommandLineRunner;
@@ -11,7 +12,7 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 @SpringBootApplication
-@EnableConfigurationProperties(StorageProperties.class)
+@EnableConfigurationProperties({StorageProperties.class, AuthProperties.class})
 public class AldrinApplication {
 
 	public static void main(String[] args) {

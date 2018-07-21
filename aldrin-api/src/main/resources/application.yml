@@ -15,21 +15,15 @@ spring:
       test-on-borrow: true
   http:
     multipart:
-      max-file-size: 2MB
+      max-file-size: 8MB
   jackson:
     property-naming-strategy: SNAKE_CASE
-routes:
-  auth: auth
-jwt:
-  header: Authorization
-  parameter: token
-  secret: mySecret
-  expiration: 604800
-  route:
-    authentication:
-      path: auth
-      refresh: refresh
-    singup: singup
+
 storage:
   location: upload-dir
+
+auth:
+  secret: mySecret
+  expiration: 604800
+  headerName: Authorization
 

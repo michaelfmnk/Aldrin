@@ -4,11 +4,11 @@ import com.michaelfmnk.aldrin.dtos.AuthRequest;
 import com.michaelfmnk.aldrin.dtos.TokenContainer;
 import com.michaelfmnk.aldrin.entities.User;
 import com.michaelfmnk.aldrin.exceptions.BadRequestException;
+import com.michaelfmnk.aldrin.props.AuthProperties;
 import com.michaelfmnk.aldrin.repositories.UserRepository;
 import com.michaelfmnk.aldrin.security.JwtTokenUtil;
 import com.michaelfmnk.aldrin.security.JwtUser;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -24,9 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 @AllArgsConstructor
 public class AuthService {
 
-    @Value("${jwt.header}")
-    private static String tokenHeader;
-
+    private final AuthProperties authProperties;
     private final AuthenticationManager authenticationManager;
     private final UserDetailsService userDetailsService;
     private final UserRepository userRepository;
@@ -60,8 +58,7 @@ public class AuthService {
     }
 
     public TokenContainer refreshToken(HttpServletRequest request) {
-        String authToken = request.getHeader(tokenHeader);
-        final String token = authToken.substring(7);
+        String token = request.getHeader(authProperties.getHeaderName());
         String username = jwtTokenUtil.getUsernameFromToken(token);
         JwtUser user = (JwtUser) userDetailsService.loadUserByUsername(username);
 

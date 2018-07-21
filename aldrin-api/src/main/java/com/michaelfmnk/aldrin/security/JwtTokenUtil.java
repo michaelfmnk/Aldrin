@@ -1,11 +1,11 @@
 package com.michaelfmnk.aldrin.security;
 
+import com.michaelfmnk.aldrin.props.AuthProperties;
 import com.michaelfmnk.aldrin.services.utils.TimeProvider;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.function.Function;
 
 @Component
+@AllArgsConstructor
 public class JwtTokenUtil implements Serializable {
 
     static final String CLAIM_KEY_USERNAME = "sub";
@@ -28,24 +29,7 @@ public class JwtTokenUtil implements Serializable {
     static final String AUDIENCE_TABLET = "tablet";
 
     private TimeProvider timeProvider;
-
-    @Autowired
-    public JwtTokenUtil(TimeProvider timeProvider){
-        this.timeProvider = timeProvider;
-    }
-
-    /**
-     * with this secret jwt-token is signed
-     */
-    @Value("${jwt.secret}")
-    private String secret = "mySecret";
-
-    /**
-     * how long jwt-token is valid (in seconds)
-     */
-    @Value("${jwt.expiration}")
-    private Long expiration = 100000L;
-
+    private final AuthProperties authProperties;
 
     /**
      * Gets username from a given jwt-token
@@ -78,7 +62,7 @@ public class JwtTokenUtil implements Serializable {
      */
     private Claims getAllClaimsFromToken(String token) {
         return Jwts.parser()
-                .setSigningKey(secret)
+                .setSigningKey(authProperties.getSecret())
                 .parseClaimsJws(token)
                 .getBody();
     }
@@ -94,7 +78,7 @@ public class JwtTokenUtil implements Serializable {
      */
     private Boolean isTokenExpired(String token){
         final Date expiration = getExpirationDateFromToken(token);
-        return expiration.before(timeProvider.now());
+        return expiration.before(timeProvider.getDate());
     }
 
 
@@ -174,7 +158,7 @@ public class JwtTokenUtil implements Serializable {
      * @return String jwt-token
      */
     private String createToken(Map<String, Object> claims, String subject) {
-        final Date createdDate = timeProvider.now();
+        final Date createdDate = timeProvider.getDate();
         final Date expirationDate = calculateExpirationDate(createdDate);
         System.out.println("createToken " + createdDate);
         return Jwts.builder()
@@ -182,7 +166,7 @@ public class JwtTokenUtil implements Serializable {
                 .setSubject(subject)
                 .setIssuedAt(createdDate)
                 .setExpiration(expirationDate)
-                .signWith(SignatureAlgorithm.HS512, secret)
+                .signWith(SignatureAlgorithm.HS512, authProperties.getSecret())
                 .compact();
 
     }
@@ -194,7 +178,7 @@ public class JwtTokenUtil implements Serializable {
      * @return expiration Date
      */
     private Date calculateExpirationDate(Date createdDate) {
-        return new Date(createdDate.getTime() + expiration * 1000);
+        return new Date(createdDate.getTime() + authProperties.getExpiration() * 1000);
     }
 
 
@@ -243,7 +227,7 @@ public class JwtTokenUtil implements Serializable {
      * @return new jwt-token
      */
     public String refreshToken(String token) {
-        final Date createdDate = timeProvider.now();
+        final Date createdDate = timeProvider.getDate();
         final Date expirationDate = calculateExpirationDate(createdDate);
 
         final Claims claims = getAllClaimsFromToken(token);
@@ -251,7 +235,7 @@ public class JwtTokenUtil implements Serializable {
         claims.setExpiration(expirationDate);
         return Jwts.builder()
                 .setClaims(claims)
-                .signWith(SignatureAlgorithm.HS512, secret)
+                .signWith(SignatureAlgorithm.HS512, authProperties.getSecret())
                 .compact();
     }
 }

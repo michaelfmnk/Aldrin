@@ -18,7 +18,7 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping(Api.Auth.LOGIN)
-    public TokenContainer createAuthenticationToken(@RequestBody AuthRequest request) throws Exception {
+    public TokenContainer createAuthenticationToken(@RequestBody AuthRequest request) {
         return authService.createToken(request);
     }
 
