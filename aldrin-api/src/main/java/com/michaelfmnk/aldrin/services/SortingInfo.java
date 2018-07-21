@@ -23,7 +23,7 @@ public class SortingInfo {
         if (Objects.isNull(key) || Objects.isNull(val)) {
             throw new IllegalArgumentException();
         }
-        mappings.put(key.toLowerCase(), val); //todo
+        mappings.put(key.toLowerCase(), val);
         return this;
     }
 

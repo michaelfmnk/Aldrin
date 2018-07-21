@@ -2,7 +2,6 @@ package com.michaelfmnk.aldrin.controllers;
 
 import com.michaelfmnk.aldrin.dtos.PostDto;
 import com.michaelfmnk.aldrin.dtos.params.PageSortParams;
-import com.michaelfmnk.aldrin.entities.Post;
 import com.michaelfmnk.aldrin.services.PostService;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.Authentication;

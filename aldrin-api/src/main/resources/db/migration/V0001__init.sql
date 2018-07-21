@@ -1,10 +1,10 @@
 create table users (
-  user_id                  serial                      primary key,
-  username                 VARCHAR(60)                 unique not null,
-  first_name               VARCHAR(60)                 not null,
-  last_name                VARCHAR(60)                 not null,
-  password                 VARCHAR(60)                 not null,
-  email                    VARCHAR(200)                not null,
+  user_id serial primary key,
+  username varchar(60) unique not null,
+  first_name varchar(60),
+  last_name varchar(60),
+  password varchar(60)  not null,
+  email varchar(200) not null,
   last_password_reset_date timestamp without time zone not null
 );
 

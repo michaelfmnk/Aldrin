@@ -9,17 +9,23 @@ public final class Api {
 
     public static final class Users {
         private Users() {}
-        public static final String USERS = "/users";
-        public static final String USER_BY_ID = USERS + "/{user_id}";
-        public static final String USER_BY_USERNAME = USERS + "/{username}";
+
+        public static final String USER_BY_USERNAME = "/users/{username}";
     }
 
     public static final class Posts {
         private Posts() {}
-        public static final String POSTS = "/posts";
         public static final String POST_BY_ID = "/posts/{post_id}";
         public static final String COMMENTS = "/posts/{post_id}/comments";
         public static final String POST_LIKES = "/posts/{post_id}/likes";
+    }
+
+    public static final class Auth {
+        private Auth() {
+        }
+
+        public static final String SIGN_UP = "/auth/sign-up";
+        public static final String LOGIN = "/auth/login";
     }
 
 

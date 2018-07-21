@@ -1,17 +1,14 @@
-package com.michaelfmnk.aldrin.security.controller;
+package com.michaelfmnk.aldrin.services;
 
-
+import com.michaelfmnk.aldrin.dtos.AuthRequest;
+import com.michaelfmnk.aldrin.dtos.TokenContainer;
 import com.michaelfmnk.aldrin.entities.User;
-import com.michaelfmnk.aldrin.exception.SuchUserAlreadyExitsException;
+import com.michaelfmnk.aldrin.exceptions.BadRequestException;
 import com.michaelfmnk.aldrin.repositories.UserRepository;
-import com.michaelfmnk.aldrin.security.JwtAuthenticationRequest;
 import com.michaelfmnk.aldrin.security.JwtTokenUtil;
 import com.michaelfmnk.aldrin.security.JwtUser;
-import com.michaelfmnk.aldrin.security.repository.JwtAuthenticationResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
-import org.springframework.mobile.device.Device;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -19,47 +16,50 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 
-@RestController
-@RequestMapping("/auth")
+@Service
 @AllArgsConstructor
-public class AuthenticationRestController {
+public class AuthService {
 
-    /**
-     * jwt-token header name
-     */
     @Value("${jwt.header}")
     private static String tokenHeader;
-
 
     private final AuthenticationManager authenticationManager;
     private final UserDetailsService userDetailsService;
     private final UserRepository userRepository;
     private final JwtTokenUtil jwtTokenUtil;
     private final PasswordEncoder passwordEncoder;
+    private final MessagesService messagesService;
 
-    @PostMapping("")
-    public ResponseEntity<?> createAuthenticationToken(
-            @RequestBody JwtAuthenticationRequest request) throws Exception{
-
+    public TokenContainer createToken(AuthRequest request) {
         final Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getUsername(),
                         request.getPassword()
                 )
         );
+
         SecurityContextHolder.getContext().setAuthentication(authentication);
         final UserDetails userDetails = userDetailsService.loadUserByUsername(request.getUsername());
         final String token = jwtTokenUtil.generateToken(userDetails);
-        return ResponseEntity.ok(new JwtAuthenticationResponse(token));
+        return new TokenContainer(token);
     }
 
+    public void signUp(AuthRequest request) {
+        if (userRepository.existsByUsername(request.getUsername())) {
+            throw new BadRequestException(messagesService.getMessage("user.already.exists"));
+        }
+        User user = User.builder()
+                .username(request.getUsername())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .build();
+        userRepository.save(user);
+    }
 
-    @GetMapping(value = "${jwt.route.authentication.refresh}")
-    public ResponseEntity<?> refreshAndGetAuthenticationToken(HttpServletRequest request) {
+    public TokenContainer refreshToken(HttpServletRequest request) {
         String authToken = request.getHeader(tokenHeader);
         final String token = authToken.substring(7);
         String username = jwtTokenUtil.getUsernameFromToken(token);
@@ -67,22 +67,9 @@ public class AuthenticationRestController {
 
         if (jwtTokenUtil.canTokenBeRefreshed(token, user.getLastPasswordResetDate())) {
             String refreshedToken = jwtTokenUtil.refreshToken(token);
-            return ResponseEntity.ok(new JwtAuthenticationResponse(refreshedToken));
-        } else {
-            return ResponseEntity.badRequest().body(null);
+            return new TokenContainer(refreshedToken);
         }
-    }
 
-
-    @PostMapping(value = "${jwt.route.singup}")
-    public ResponseEntity<?> registerUser(@RequestBody JwtAuthenticationRequest request){
-        if (userDetailsService.loadUserByUsername(request.getUsername()) != null){
-            throw new SuchUserAlreadyExitsException();
-        }
-        User user = new User();
-        user.setUsername(request.getUsername());
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
-        userRepository.save(user);
-        return ResponseEntity.ok("registered");
+        throw new BadRequestException(messagesService.getMessage("auth.token.not.refreshable"));
     }
 }

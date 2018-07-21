@@ -1,7 +1,7 @@
 package com.michaelfmnk.aldrin.controllers;
 
 import com.michaelfmnk.aldrin.dtos.ErrorDetail;
-import com.michaelfmnk.aldrin.exception.ResourceNotFoundException;
+import com.michaelfmnk.aldrin.exceptions.ResourceNotFoundException;
 import com.michaelfmnk.aldrin.services.utils.TimeProvider;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;

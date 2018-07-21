@@ -10,8 +10,6 @@ import com.michaelfmnk.aldrin.entities.Post;
 import com.michaelfmnk.aldrin.entities.User;
 import com.michaelfmnk.aldrin.repositories.CommentRepository;
 import com.michaelfmnk.aldrin.repositories.PostRepository;
-import com.michaelfmnk.aldrin.repositories.UserRepository;
-
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,23 +20,17 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import static java.lang.String.format;
-
 @Service
 @AllArgsConstructor
 public class PostService {
     private final PostRepository postRepository;
-    private final UserRepository userRepository;
     private final UserService userService;
     private final ConverterService converterService;
     private final CommentRepository commentRepository;
+    private final MessagesService messagesService;
 
-    //
-
-    public PostDto findPostById(Integer id) {
-        return postRepository.findById(id)
-                .map(converterService::toDto)
-                .orElseThrow(() -> new EntityNotFoundException(format("no post was found with id=%s", id)));
+    public PostDto findPostById(Integer postId) {
+        return converterService.toDto(getValidPost(postId));
     }
 
     public PostDto updatePost(Integer postId, PostDto postDto) {
@@ -71,7 +63,7 @@ public class PostService {
     public PostDto addCommentToPost(Integer postId, Integer userId, CommentDto commentDto) {
         Comment comment = converterService.toEntity(commentDto, postId, userId);
         if (commentRepository.existsById(comment.getRepliedCommentId())) {
-            throw new EntityNotFoundException(""); //todo message provider
+            throw new EntityNotFoundException(messagesService.getMessage("comment.not.found"));
         }
         Post post = getValidPost(postId);
         post.getComments().add(comment);
@@ -101,11 +93,11 @@ public class PostService {
 
     private Post getValidPost(Integer postId) {
         return postRepository.findById(postId)
-                .orElseThrow(() -> new EntityNotFoundException(format("no post was found with post_id=%s", postId)));
+                .orElseThrow(() -> new EntityNotFoundException(messagesService.getMessage("post.not.found")));
     }
 
     private void failIfPostIdNotValid(Integer postId) {
         postRepository.findById(postId)
-                .orElseThrow(() -> new EntityNotFoundException(format("no post was found with post_id=%s", postId)));
+                .orElseThrow(() -> new EntityNotFoundException(messagesService.getMessage("post.not.found")));
     }
 }

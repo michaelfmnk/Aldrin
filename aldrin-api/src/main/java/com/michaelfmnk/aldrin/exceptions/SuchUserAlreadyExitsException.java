@@ -1,4 +1,4 @@
-package com.michaelfmnk.aldrin.exception;
+package com.michaelfmnk.aldrin.exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

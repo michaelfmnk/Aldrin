@@ -1,6 +1,5 @@
 package com.michaelfmnk.aldrin.security;
 
-import com.michaelfmnk.aldrin.services.UserService;
 import io.jsonwebtoken.ExpiredJwtException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -18,7 +17,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Objects;
 
 public class JwtAuthenticationTokenFilter extends OncePerRequestFilter{
 
