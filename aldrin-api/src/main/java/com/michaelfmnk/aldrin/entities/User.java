@@ -59,4 +59,7 @@ public class User {
     @OneToMany(mappedBy = "author")
     private List<Post> posts;
     private Date lastPasswordResetDate;
+
+    @OneToMany(mappedBy = "user")
+    private List<Comment> comments;
 }

@@ -51,13 +51,13 @@ public class PostController {
     }
 
     @PostMapping(Api.Posts.COMMENTS)
-    public PostDto postComment(@PathVariable("post_id") Integer postId, @RequestBody @Valid CommentDto commentDto,
-                               UserAuthentication auth) {
-        Integer userId = auth.getId();
+    @ResponseStatus(HttpStatus.CREATED)
+    public CommentDto postComment(@PathVariable("post_id") Integer postId, @RequestBody @Valid CommentDto commentDto,
+                                  UserAuthentication auth) {
         commentDto = commentDto.toBuilder()
-                .userId(userId)
+                .userId(auth.getId())
                 .postId(postId)
                 .build();
-        return postService.addCommentToPost(postId,  userId, commentDto);
+        return postService.addCommentToPost(postId, commentDto);
     }
 }

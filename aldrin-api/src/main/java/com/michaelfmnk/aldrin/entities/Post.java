@@ -5,6 +5,8 @@ import com.michaelfmnk.aldrin.dtos.PostDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
@@ -14,16 +16,19 @@ import java.util.Set;
 
 
 @Data
+@DynamicInsert
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "posts")
-public class Post {
+public class Post implements Updatable<PostDto> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer postId;
 
     @Length(max = 300, message = "title must not contain more then 300 characters")
     private String title;
+
+    @CreationTimestamp
     private LocalDateTime date;
 
     @JoinColumn(name = "user_id")
@@ -42,7 +47,8 @@ public class Post {
     )
     private Set<User> likes;
 
-    public void merge(PostDto dto) {
+    @Override
+    public void update(PostDto dto) {
         this.title = dto.getTitle();
     }
 }

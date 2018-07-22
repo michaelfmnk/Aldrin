@@ -56,13 +56,13 @@ public class ConverterService {
     }
 
     @IfNullReturnNull
-    public Comment toEntity(CommentDto commentDto, Integer postId, Integer userId) {
+    public Comment toEntity(CommentDto dto) {
         return Comment.builder()
-                .commentId(commentDto.getId())
-                .repliedCommentId(commentDto.getRepliedCommentId())
-                .content(commentDto.getContent())
-                .userId(userId)
-                .postId(postId)
+                .commentId(dto.getId())
+                .repliedCommentId(dto.getRepliedCommentId())
+                .content(dto.getContent())
+                .userId(dto.getUserId())
+                .postId(dto.getPostId())
                 .build();
     }
 }

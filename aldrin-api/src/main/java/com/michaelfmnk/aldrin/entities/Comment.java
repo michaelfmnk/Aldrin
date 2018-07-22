@@ -1,10 +1,13 @@
 package com.michaelfmnk.aldrin.entities;
 
+import com.michaelfmnk.aldrin.dtos.CommentDto;
 import com.michaelfmnk.aldrin.services.SortingInfo;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -12,10 +15,11 @@ import java.util.Optional;
 
 @Data
 @Builder
+@DynamicInsert
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "comments")
-public class Comment {
+public class Comment implements Updatable<CommentDto> {
 
     public static final String DATE = "date";
     public static final String DEFAULT_SORT = DATE;
@@ -27,6 +31,7 @@ public class Comment {
 
     private String content;
 
+    @CreationTimestamp
     private LocalDateTime date;
 
     @Column(name = "replied_comment_id")
@@ -54,4 +59,8 @@ public class Comment {
         return Optional.ofNullable(this.repliedComment);
     }
 
+    @Override
+    public void update(CommentDto dto) {
+        this.content = dto.getContent();
+    }
 }

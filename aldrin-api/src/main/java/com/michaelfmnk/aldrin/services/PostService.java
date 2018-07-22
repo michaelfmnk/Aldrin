@@ -35,7 +35,7 @@ public class PostService {
 
     public PostDto updatePost(Integer postId, PostDto postDto) {
         Post post = getValidPost(postId);
-        post.merge(postDto);
+        post.update(postDto);
         post = postRepository.save(post);
         return converterService.toDto(post);
     }
@@ -60,20 +60,25 @@ public class PostService {
         postRepository.save(post);
     }
 
-    public PostDto addCommentToPost(Integer postId, Integer userId, CommentDto commentDto) {
-        Comment comment = converterService.toEntity(commentDto, postId, userId);
-        if (commentRepository.existsById(comment.getRepliedCommentId())) {
+    public CommentDto addCommentToPost(Integer postId, CommentDto commentDto) {
+        Comment comment = converterService.toEntity(commentDto);
+        if (Objects.nonNull(comment.getRepliedCommentId()) &&
+                commentRepository.existsById(comment.getRepliedCommentId())) {
             throw new EntityNotFoundException(messagesService.getMessage("comment.not.found"));
         }
-        Post post = getValidPost(postId);
-        post.getComments().add(comment);
-        post = postRepository.save(post);
-        return converterService.toDto(post);
+        failIfPostIdNotValid(postId);
+        comment = commentRepository.save(comment);
+        return converterService.toDto(comment);
     }
 
     public Pagination<CommentDto> getCommentsForPost(Integer id, PageSortParams params) {
-        Pageable pageable = new PageSortRequest(params.getOffset(), params.getLimit(),
-                Comment.SORTING_INFO.getDefaultSort(false));
+        Pageable pageable = PageSortRequest
+                .builder()
+                .limit(params.getLimit())
+                .offset(params.getOffset())
+                .sort(Comment.SORTING_INFO.getDefaultSort(params.isAsc()))
+                .build();
+
         failIfPostIdNotValid(id);
         Page<Comment> commentsPage = commentRepository.findByPostId(id, pageable);
         List<CommentDto> data = commentsPage.getContent()
@@ -81,14 +86,6 @@ public class PostService {
                 .map(converterService::toDto)
                 .collect(Collectors.toList());
         return new Pagination<>(data, commentsPage.getTotalElements());
-    }
-
-    // TRASH
-    public List<PostDto> getFeed(String name, PageSortParams params) {
-        List<Post> posts = postRepository.findPostByAuthor_FollowersUserId(1);
-        return posts.stream()
-                .map(converterService::toDto)
-                .collect(Collectors.toList());
     }
 
     private Post getValidPost(Integer postId) {
@@ -100,4 +97,13 @@ public class PostService {
         postRepository.findById(postId)
                 .orElseThrow(() -> new EntityNotFoundException(messagesService.getMessage("post.not.found")));
     }
+
+    // TRASH
+    public List<PostDto> getFeed(String name, PageSortParams params) {
+        List<Post> posts = postRepository.findPostByAuthor_FollowersUserId(1);
+        return posts.stream()
+                .map(converterService::toDto)
+                .collect(Collectors.toList());
+    }
+
 }

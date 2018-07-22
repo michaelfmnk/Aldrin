@@ -21,7 +21,7 @@ create table comments (
   user_id int not null references users(user_id) on update cascade on delete cascade,
   replied_comment_id int references comments(comment_id) on update cascade on delete cascade,
   content text not null,
-  date    timestamp without time zone
+  date    timestamp without time zone not null default now()
 );
 
 create table authorities (

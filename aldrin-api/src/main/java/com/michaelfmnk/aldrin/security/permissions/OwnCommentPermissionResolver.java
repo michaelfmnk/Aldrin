@@ -1,6 +1,6 @@
 package com.michaelfmnk.aldrin.security.permissions;
 
-import com.michaelfmnk.aldrin.entities.Post;
+import com.michaelfmnk.aldrin.entities.Comment;
 import com.michaelfmnk.aldrin.security.UserAuthentication;
 import com.michaelfmnk.aldrin.services.UserService;
 import lombok.AllArgsConstructor;
@@ -12,14 +12,14 @@ import java.util.Objects;
 
 @Component
 @AllArgsConstructor
-public class OwnPostPermissionResolver implements PermissionResolver {
+public class OwnCommentPermissionResolver implements PermissionResolver {
 
-    public static final String OWN_POST = "OWN_POST";
+    public static final String OWN_COMMENT = "OWN_COMMENT";
     private final UserService userService;
 
     @Override
     public String getTargetType() {
-        return OWN_POST;
+        return OWN_COMMENT;
     }
 
     @Override
@@ -28,9 +28,9 @@ public class OwnPostPermissionResolver implements PermissionResolver {
             return false;
         }
         return userService.findValidUserById(auth.getId())
-                .getPosts()
+                .getComments()
                 .stream()
-                .map(Post::getPostId)
+                .map(Comment::getCommentId)
                 .anyMatch(id -> Objects.equals((Integer) target, id));
     }
 }

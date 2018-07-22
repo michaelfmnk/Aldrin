@@ -9,7 +9,6 @@ public final class Api {
 
     public static final class Users {
         private Users() {}
-
         public static final String USER_BY_USERNAME = "/users/{username}";
     }
 
@@ -20,10 +19,16 @@ public final class Api {
         public static final String POST_LIKES = "/posts/{post_id}/likes";
     }
 
+    public static final class Comments {
+        private Comments() {
+        }
+
+        public static final String COMMENT_BY_ID = "/comments/{comment_id}";
+    }
+
     public static final class Auth {
         private Auth() {
         }
-
         public static final String SIGN_UP = "/auth/sign-up";
         public static final String LOGIN = "/auth/login";
     }

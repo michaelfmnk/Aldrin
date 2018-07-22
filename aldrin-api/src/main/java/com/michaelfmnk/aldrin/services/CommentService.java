@@ -16,16 +16,15 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final ConverterService converterService;
 
-    public void deleteCommentById(Integer id) {
-        if(!commentRepository.existsById(id)) {
-            throw new EntityNotFoundException(format("no comment was found with id=%s", id));
-        }
-        commentRepository.deleteById(id);
+    public Comment getValidCommentById(Integer id) {
+        return commentRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(format("no comment was found with id=%s", id)));
     }
 
-    public CommentDto getCommentById(Integer id) {
-        Comment comment = commentRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(format("no comment was found with id=%s", id)));
+    public CommentDto updateComment(Integer commentId, CommentDto commentDto) {
+        Comment comment = getValidCommentById(commentId);
+        comment.update(commentDto);
+        comment = commentRepository.save(comment);
         return converterService.toDto(comment);
     }
 }

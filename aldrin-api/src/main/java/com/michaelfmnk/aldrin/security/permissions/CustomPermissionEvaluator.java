@@ -1,6 +1,7 @@
 package com.michaelfmnk.aldrin.security.permissions;
 
 import com.michaelfmnk.aldrin.security.UserAuthentication;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -18,7 +19,7 @@ public class CustomPermissionEvaluator implements PermissionEvaluator {
 
     private Map<String, PermissionResolver> resolvers;
 
-
+    @Autowired
     public CustomPermissionEvaluator(List<PermissionResolver> resolvers) {
         this.resolvers = resolvers.stream()
                 .collect(Collectors.toMap(PermissionResolver::getTargetType, Function.identity()));
