@@ -1,0 +1,32 @@
+spring:
+  session:
+    store-type: none
+  jpa:
+    database: POSTGRESQL
+    show-sql: true
+    database-platform: org.hibernate.dialect.PostgreSQL9Dialect
+  datasource:
+    platform: postgres
+    username: postgres
+    password: postgres
+    url: jdbc:postgresql://localhost:5432/aldrin
+    driver-class-name: org.postgresql.Driver
+    tomcat:
+      test-on-borrow: true
+  http:
+    multipart:
+      max-file-size: 8MB
+  jackson:
+    property-naming-strategy: SNAKE_CASE
+
+storage:
+  location: upload-dir
+
+auth:
+  secret: mySecret
+  expiration: 604800
+  headerName: Authorization
+
+mailjet:
+  publicKey: d4ae66bac27f12fe03b40223f927f941
+  privateKey: 40c40e56d10fba6ccf2476b59e1cb550
