@@ -4,6 +4,10 @@ package com.michaelfmnk.aldrin.controllers;
 import com.michaelfmnk.aldrin.dtos.AuthRequest;
 import com.michaelfmnk.aldrin.dtos.TokenContainer;
 import com.michaelfmnk.aldrin.services.AuthService;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -17,8 +21,14 @@ public class AuthController {
 
     private final AuthService authService;
 
+    @ApiOperation(value = "Login user", notes = "can access anyone")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "User logged in", response = TokenContainer.class),
+            @ApiResponse(code = 401, message = "Username or password is incorect")
+    })
     @PostMapping(Api.Auth.LOGIN)
-    public TokenContainer createAuthenticationToken(@RequestBody AuthRequest request) {
+    public TokenContainer createAuthenticationToken(@ApiParam(value = "Required: username and password")
+                                                        @RequestBody AuthRequest request) {
         return authService.createToken(request);
     }
 
