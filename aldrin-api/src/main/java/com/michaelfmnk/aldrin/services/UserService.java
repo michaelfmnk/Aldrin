@@ -5,6 +5,7 @@ import com.michaelfmnk.aldrin.dtos.UserDto;
 import com.michaelfmnk.aldrin.entities.User;
 import com.michaelfmnk.aldrin.repositories.UserRepository;
 import com.michaelfmnk.aldrin.security.JwtUserFactory;
+import com.michaelfmnk.aldrin.utils.ConverterService;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -23,14 +24,14 @@ public class UserService implements UserDetailsService {
     private final ConverterService converterService;
 
     @Override
-    public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
-        return userRepository.findUserByUsername(s)
+    public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
+        return userRepository.findUserByLogin(login)
                 .map(JwtUserFactory::create)
-                .orElseThrow(() -> new EntityNotFoundException(format("no user was found with id=%s", s)));
+                .orElseThrow(() -> new EntityNotFoundException(format("no user was found with username=%s", login)));
     }
 
-    public UserDto findUserByUsername(String username) {
-        return converterService.toDto(findValidUserByUsername(username));
+    public UserDto findUserByLogin(String login) {
+        return converterService.toDto(findValidUserByLogin(login));
     }
 
     public User findValidUserById(Integer id) {
@@ -39,8 +40,8 @@ public class UserService implements UserDetailsService {
     }
 
 
-    public User findValidUserByUsername(String username) {
-        return userRepository.findUserByUsername(username)
-                .orElseThrow(() -> new EntityNotFoundException(format("no user found with id=%s", username)));
+    public User findValidUserByLogin(String login) {
+        return userRepository.findUserByLogin(login)
+                .orElseThrow(() -> new EntityNotFoundException(format("no user found with login=%s", login)));
     }
 }

@@ -1,11 +1,11 @@
 create table users (
   user_id serial primary key,
-  username varchar(60) unique not null,
+  login varchar(200) unique not null,
   first_name varchar(60),
   last_name varchar(60),
   password varchar(60)  not null,
-  email varchar(200) not null,
-  last_password_reset_date timestamp without time zone not null
+  last_password_reset_date timestamp without time zone not null default now(),
+  enabled boolean not null default false
 );
 
 create table posts (
@@ -21,7 +21,7 @@ create table comments (
   user_id int not null references users(user_id) on update cascade on delete cascade,
   replied_comment_id int references comments(comment_id) on update cascade on delete cascade,
   content text not null,
-  date    timestamp without time zone not null default now()
+  date timestamp without time zone not null default now()
 );
 
 create table authorities (
@@ -45,6 +45,12 @@ create table subscriptions (
   follower_user_id int not null references users(user_id) on update cascade on delete cascade,
   followed_user_id int not null references users(user_id) on update cascade on delete cascade,
   constraint subscriptions_pk primary key (follower_user_id, followed_user_id)
+);
+
+create table verification_codes (
+  verification_code varchar(20) not null,
+  user_id int not null references users(user_id) on update cascade on delete cascade,
+  constraint verification_codes_pk primary key (verification_code, user_id)
 );
 
 insert into authorities (authority_id, authority_name)

@@ -16,11 +16,10 @@ import java.util.Date;
 public class JwtUser implements UserDetails {
 
     private final Integer id;
-    private final String username;
+    private final String login;
     private final String firstname;
     private final String lastname;
     private final String password;
-    private final String email;
     private final Collection<? extends GrantedAuthority> authorities;
     private final boolean enabled;
     private final Date lastPasswordResetDate;
@@ -38,7 +37,7 @@ public class JwtUser implements UserDetails {
 
     @Override
     public String getUsername() {
-        return username;
+        return login;
     }
 
     @JsonIgnore

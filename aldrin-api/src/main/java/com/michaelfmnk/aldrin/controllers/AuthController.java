@@ -10,6 +10,7 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -27,7 +28,7 @@ public class AuthController {
             @ApiResponse(code = 401, message = "Username or password is incorect")
     })
     @PostMapping(Api.Auth.LOGIN)
-    public TokenContainer createAuthenticationToken(@ApiParam(value = "Required: username and password")
+    public TokenContainer createAuthenticationToken(@ApiParam(value = "Required: email and password")
                                                         @RequestBody AuthRequest request) {
         return authService.createToken(request);
     }
@@ -39,7 +40,7 @@ public class AuthController {
 
     @PostMapping(Api.Auth.SIGN_UP)
     @ResponseStatus(HttpStatus.CREATED)
-    public void registerUser(@RequestBody AuthRequest request) {
+    public void registerUser(@RequestBody @Validated AuthRequest request) {
         authService.signUp(request);
     }
 }

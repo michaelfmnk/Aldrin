@@ -2,6 +2,7 @@ package com.michaelfmnk.aldrin;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mailjet.client.MailjetClient;
 import com.michaelfmnk.aldrin.props.AuthProperties;
 import com.michaelfmnk.aldrin.security.JwtTokenUtil;
 import com.michaelfmnk.aldrin.security.JwtUser;
@@ -13,6 +14,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.jdbc.Sql;
@@ -38,6 +40,8 @@ public class BaseTest {
     protected DataSource dataSource;
     @Autowired
     protected AuthProperties authProperties;
+    @MockBean
+    protected MailjetClient mailjetClient;
 
     @Before
     public void init() {
@@ -45,7 +49,7 @@ public class BaseTest {
         final String token = jwtTokenUtil.generateToken(
                 JwtUser.builder()
                         .id(1)
-                        .username("MichaelFMNK")
+                        .login("michaelfmnk@gmail.com")
                         .build());
         headers = new Headers(new Header(authProperties.getHeaderName(), token));
     }

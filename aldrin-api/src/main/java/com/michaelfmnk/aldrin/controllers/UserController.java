@@ -17,6 +17,6 @@ public class UserController {
 
     @GetMapping(Api.Users.USER_BY_USERNAME)
     public UserDto getUserByUsername(@PathVariable("username") String username){
-        return userService.findUserByUsername(username);
+        return userService.findUserByLogin(username);
     }
 }

@@ -3,6 +3,7 @@ package com.michaelfmnk.aldrin.services;
 import com.michaelfmnk.aldrin.dtos.CommentDto;
 import com.michaelfmnk.aldrin.entities.Comment;
 import com.michaelfmnk.aldrin.repositories.CommentRepository;
+import com.michaelfmnk.aldrin.utils.ConverterService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 

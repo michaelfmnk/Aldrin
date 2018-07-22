@@ -1,4 +1,4 @@
-package com.michaelfmnk.aldrin.services.utils;
+package com.michaelfmnk.aldrin.utils;
 
 import org.springframework.stereotype.Component;
 
