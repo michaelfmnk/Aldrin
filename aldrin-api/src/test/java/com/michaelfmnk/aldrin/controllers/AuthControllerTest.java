@@ -2,6 +2,7 @@ package com.michaelfmnk.aldrin.controllers;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.mailjet.client.MailjetRequest;
+import com.mailjet.client.errors.MailjetException;
 import com.michaelfmnk.aldrin.BaseTest;
 import com.michaelfmnk.aldrin.dtos.AuthRequest;
 import com.michaelfmnk.aldrin.dtos.TokenContainer;
@@ -18,8 +19,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 public class AuthControllerTest extends BaseTest {
 
@@ -191,6 +191,33 @@ public class AuthControllerTest extends BaseTest {
                 .hasNumberOfRows(1)
                 .row(0)
                 .value("verification_code").isNotNull();
+    }
+
+    @Test
+    public void shouldFailSingupIfNotPossibleToSendEmail() throws Throwable {
+        when(mailjetClient.post(any(MailjetRequest.class))).thenThrow(new MailjetException("error"));
+
+        AuthRequest authRequest = AuthRequest.builder()
+                .login("meteormf99@gmail.com")
+                .password("newPassword")
+                .build();
+
+
+        given()
+                .accept(ContentType.JSON)
+                .contentType(ContentType.JSON)
+                .body(objectMapper.writeValueAsBytes(authRequest))
+                .when()
+                .post("/aldrin-api/auth/sign-up")
+                .then()
+                .extract().response().prettyPeek()
+                .then()
+                .statusCode(HttpStatus.SC_INTERNAL_SERVER_ERROR)
+                .body("title", equalTo("INTERNAL_SERVER_ERROR"))
+                .body("status", equalTo(500))
+                .body("detail", equalTo("Oops. Something went wrong while sending verification email. Try again later"))
+                .body("time_stamp", notNullValue())
+                .body("dev_message", equalTo("java.lang.RuntimeException"));
     }
 
     @Test
