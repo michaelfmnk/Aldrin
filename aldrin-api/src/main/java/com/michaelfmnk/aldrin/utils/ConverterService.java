@@ -1,4 +1,4 @@
-package com.michaelfmnk.aldrin.services;
+package com.michaelfmnk.aldrin.utils;
 
 import com.michaelfmnk.aldrin.dtos.CommentDto;
 import com.michaelfmnk.aldrin.dtos.PostDto;
@@ -48,10 +48,9 @@ public class ConverterService {
     public UserDto toDto(User entity) {
         return UserDto.builder()
                 .id(entity.getUserId())
-                .username(entity.getUsername())
+                .login(entity.getLogin())
                 .firstName(entity.getFirstName())
                 .lastName(entity.getLastName())
-                .email(entity.getEmail())
                 .build();
     }
 

@@ -17,12 +17,11 @@ public class JwtUserFactory {
     public static JwtUser create(User user){
         return JwtUser.builder()
                 .id(user.getUserId())
-                .username(user.getUsername())
+                .login(user.getLogin())
                 .firstname(user.getFirstName())
                 .lastname(user.getLastName())
                 .password(user.getPassword())
-                .email(user.getEmail())
-                .enabled(true)
+                .enabled(user.isEnabled())
                 .lastPasswordResetDate(user.getLastPasswordResetDate())
                 .authorities(mapToGrantedAuthorities(user.getAuthorities()))
                 .build();

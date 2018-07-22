@@ -1,4 +1,4 @@
-package com.michaelfmnk.aldrin.services;
+package com.michaelfmnk.aldrin.utils;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.apachecommons.CommonsLog;

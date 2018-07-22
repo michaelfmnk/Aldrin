@@ -2,18 +2,27 @@ package com.michaelfmnk.aldrin.controllers;
 
 import com.michaelfmnk.aldrin.dtos.ErrorDetailDto;
 import com.michaelfmnk.aldrin.exceptions.BadRequestException;
-import com.michaelfmnk.aldrin.services.utils.TimeProvider;
+import com.michaelfmnk.aldrin.utils.TimeProvider;
 import lombok.AllArgsConstructor;
 import lombok.extern.apachecommons.CommonsLog;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import javax.persistence.EntityNotFoundException;
+import javax.validation.ValidationException;
+import java.util.Objects;
 
 
 @CommonsLog
@@ -68,5 +77,58 @@ public class ErrorHandlingController extends ResponseEntityExceptionHandler {
         return errorDetailDto;
     }
 
+    @ExceptionHandler(BadCredentialsException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ErrorDetailDto exceptionHandler(BadCredentialsException e) {
+        ErrorDetailDto errorDetailDto = ErrorDetailDto.builder()
+                .status(HttpStatus.UNAUTHORIZED)
+                .cause(e)
+                .timeStamp(timeProvider.getDate())
+                .build();
+        return errorDetailDto;
+    }
 
+    @ExceptionHandler(DisabledException.class)
+    @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
+    public ErrorDetailDto exceptionHandler(DisabledException e) {
+        ErrorDetailDto errorDetailDto = ErrorDetailDto.builder()
+                .status(HttpStatus.METHOD_NOT_ALLOWED)
+                .cause(e)
+                .timeStamp(timeProvider.getDate())
+                .build();
+        return errorDetailDto;
+    }
+
+    @ExceptionHandler(ValidationException.class)
+    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+    public ErrorDetailDto exceptionHandler(ValidationException e) {
+        ErrorDetailDto errorDetailDto = ErrorDetailDto.builder()
+                .status(HttpStatus.UNPROCESSABLE_ENTITY)
+                .cause(e)
+                .timeStamp(timeProvider.getDate())
+                .build();
+        return errorDetailDto;
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
+                                                                  HttpHeaders headers,
+                                                                  HttpStatus status,
+                                                                  WebRequest request) {
+        FieldError fieldError = ex.getBindingResult().getFieldError();
+        ex.getBindingResult().getFieldErrors().get(0).getDefaultMessage();
+        ErrorDetailDto errorDetailDto = ErrorDetailDto.builder()
+                .status(HttpStatus.UNPROCESSABLE_ENTITY)
+                .cause(ex)
+                .timeStamp(timeProvider.getDate())
+                .build();
+
+        if (Objects.nonNull(fieldError)) {
+            if (Objects.nonNull(fieldError.getDefaultMessage())) {
+                errorDetailDto.setDetail(fieldError.getDefaultMessage());
+            }
+            return new ResponseEntity<>(errorDetailDto, HttpStatus.UNPROCESSABLE_ENTITY);
+        }
+        return new ResponseEntity<>(errorDetailDto, HttpStatus.UNPROCESSABLE_ENTITY);
+    }
 }

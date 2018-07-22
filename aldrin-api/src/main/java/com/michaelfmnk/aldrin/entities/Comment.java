@@ -1,7 +1,7 @@
 package com.michaelfmnk.aldrin.entities;
 
 import com.michaelfmnk.aldrin.dtos.CommentDto;
-import com.michaelfmnk.aldrin.services.SortingInfo;
+import com.michaelfmnk.aldrin.utils.SortingInfo;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

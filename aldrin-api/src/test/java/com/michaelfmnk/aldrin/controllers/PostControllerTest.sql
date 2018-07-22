@@ -1,8 +1,8 @@
 INSERT INTO users
-(user_id, username, first_name, last_name, password, last_password_reset_date, email)
+(user_id, login, first_name, last_name, password, last_password_reset_date, enabled)
 VALUES
-(1, 'MichaelFMNK', 'Michael', 'Fomenko', 'pass', '2017-07-16 14:40:14.518000', 'michaelfmnk@gmail.com'),
-(2, 'broo', 'Nick', 'Brown', 'pass', '2007-07-16 14:40:14.518000', 'someoneelse@gmail.com');
+(1, 'michaelfmnk@gmail.com', 'Michael', 'Fomenko', '$2a$10$noFrZfy.dxossQlZ4WqX2.U66nRVUeGkjQtNFP7298bcqKmd.amsK', '2017-07-16 14:40:14.518000', true), --test
+(2, 'someoneelse@gmail.com', 'Nick', 'Brown', '$2a$10$noFrZfy.dxossQlZ4WqX2.U66nRVUeGkjQtNFP7298bcqKmd.amsK', '2007-07-16 14:40:14.518000', false); --test
 
 
 INSERT INTO users_authorities

@@ -1,7 +1,7 @@
 package com.michaelfmnk.aldrin.security;
 
 import com.michaelfmnk.aldrin.props.AuthProperties;
-import com.michaelfmnk.aldrin.services.utils.TimeProvider;
+import com.michaelfmnk.aldrin.utils.TimeProvider;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -12,6 +12,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 
 @Component
@@ -36,7 +37,7 @@ public class JwtTokenUtil implements Serializable {
      * @param token jwt-token
      * @return Username from a token
      */
-    public String getUsernameFromToken(String token) {
+    public String getLoginFromToken(String token) {
         return getClaimFromToken(token, Claims::getSubject);
     }
 
@@ -104,11 +105,12 @@ public class JwtTokenUtil implements Serializable {
      */
     public Boolean validateToken(String token, JwtUser userDetails) {
         JwtUser jwtUser = userDetails;
-        final String username = getUsernameFromToken(token);
+        final String login = getLoginFromToken(token);
         final Date created = getIssuedAtDateFromToken(token);
         return (
-                username.equals(jwtUser.getUsername())
+                Objects.equals(login, jwtUser.getLogin())
                         && !isTokenExpired(token)
+                        && jwtUser.isEnabled()
                         && !isCreatedBeforeLastPasswordReset(created, jwtUser.getLastPasswordResetDate())
         );
     }

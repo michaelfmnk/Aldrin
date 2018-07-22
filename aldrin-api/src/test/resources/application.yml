@@ -19,3 +19,7 @@ auth:
   secret: mySecret
   expiration: 604800
   headerName: Authorization
+
+mailjet:
+  publicKey: d4ae66bac27f12fe03b40223f927f941
+  privateKey: 40c40e56d10fba6ccf2476b59e1cb550
