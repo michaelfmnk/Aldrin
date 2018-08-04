@@ -31,7 +31,7 @@ build-api:
 
 
 build-ui:
-  image: node:4.2.2
+  image: node:8
   stage: build-ui
   before_script:
     - curl -o- -L https://yarnpkg.com/install.sh | bash
