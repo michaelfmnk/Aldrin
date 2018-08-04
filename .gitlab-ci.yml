@@ -5,7 +5,12 @@ stages:
 
 build-api:
   stage: build-api
-  script: ./aldrin-api/mvnw package
+  before_script:
+    - cd ./aldrin-api/
+  script:
+    - mvn package
+  after_script:
+    - cd /
   artifacts:
     paths:
       - target/demo-0.0.1-SNAPSHOT.jar
