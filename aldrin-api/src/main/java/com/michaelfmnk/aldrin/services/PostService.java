@@ -58,7 +58,7 @@ public class PostService {
     }
 
     public void deleteLikeForPost(Integer postId, Integer userId) {
-        Post post = getValidPost(userId);
+        Post post = getValidPost(postId);
         post.getLikes().removeIf(x -> Objects.equals(userId, x.getUserId()));
         postRepository.save(post);
     }
