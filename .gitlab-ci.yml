@@ -6,6 +6,7 @@ services:
 
 stages:
   - build-api
+  - build-ui
 
 build-api:
   image: docker:latest
@@ -27,3 +28,13 @@ build-api:
     paths:
       - /aldrin-api/target/aldrin-0.0.1-SNAPSHOT.jar
     when: always
+
+
+build-ui:
+  before_script:
+    - curl -o- -L https://yarnpkg.com/install.sh | bash
+    - export PATH="$HOME/.yarn/bin:$PATH"
+    - yarn install
+  script:
+    - yarn build
+

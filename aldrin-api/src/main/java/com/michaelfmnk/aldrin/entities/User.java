@@ -53,7 +53,7 @@ public class User {
     )
     private List<Authority> authorities;
 
-    @OneToMany
+    @ManyToMany
     @JoinTable(
             name = "likes",
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "userId"),

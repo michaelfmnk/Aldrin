@@ -20,7 +20,8 @@ import java.util.Set;
 @DynamicInsert
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity(name = "posts")
+@Table(name = "posts")
+@Entity
 public class Post implements Updatable<PostDto> {
 
     public static final String POST_ID = "postId";
@@ -38,15 +39,18 @@ public class Post implements Updatable<PostDto> {
     @CreationTimestamp
     private LocalDateTime date;
 
-    @JoinColumn(name = "user_id")
+    @Column(name = "user_id")
+    private Integer userId;
+
     @ManyToOne
+    @JoinColumn(name = "user_id", updatable = false, insertable = false)
     private User author;
 
-    @OneToMany(mappedBy = "post")
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     @OrderBy("date DESC")
     private List<Comment> comments;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @ManyToMany
     @JoinTable(
             name = "likes",
             joinColumns = @JoinColumn(name = "post_id", referencedColumnName = "postId"),

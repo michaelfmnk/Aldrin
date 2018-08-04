@@ -60,4 +60,11 @@ public class PostController {
                 .build();
         return postService.addCommentToPost(postId, commentDto);
     }
+
+    @DeleteMapping(Api.Posts.POST_BY_ID)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasPermission(#postId, 'OWN_POST', 'USER') or hasAuthority('ADMIN')")
+    public void deletePost(@PathVariable("post_id") Integer postId) {
+        postService.deletePost(postId);
+    }
 }

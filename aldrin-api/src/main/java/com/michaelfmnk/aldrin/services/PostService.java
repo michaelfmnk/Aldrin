@@ -18,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -98,6 +99,12 @@ public class PostService {
     private void failIfPostIdNotValid(Integer postId) {
         postRepository.findById(postId)
                 .orElseThrow(() -> new EntityNotFoundException(messagesService.getMessage("post.not.found")));
+    }
+
+    @Transactional
+    public void deletePost(Integer postId) {
+        Post postToDelete = getValidPost(postId);
+        postRepository.delete(postToDelete);
     }
 
     // TRASH
