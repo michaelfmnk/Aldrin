@@ -8,7 +8,7 @@ build-api:
   before_script:
     - cd ./aldrin-api/
   script:
-    - mvn package
+    - ./mvnw package
   after_script:
     - cd /
   artifacts:
