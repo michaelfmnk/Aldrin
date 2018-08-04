@@ -12,10 +12,12 @@ public final class Api {
 
         public static final String USER_BY_USERNAME = "/users/{username}";
         public static final String USER_POSTS = "/users/{user_id}/posts";
+        public static final String VERIFY = "/users/{user_id}/verify";
     }
 
     public static final class Posts {
         private Posts() {}
+
         public static final String POST_BY_ID = "/posts/{post_id}";
         public static final String COMMENTS = "/posts/{post_id}/comments";
         public static final String POST_LIKES = "/posts/{post_id}/likes";

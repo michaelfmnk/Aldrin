@@ -12,5 +12,4 @@ public class UserDto implements Serializable {
     private String login;
     private String firstName;
     private String lastName;
-    private String email;
 }

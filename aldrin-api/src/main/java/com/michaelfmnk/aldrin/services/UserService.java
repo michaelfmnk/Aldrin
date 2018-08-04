@@ -4,14 +4,19 @@ package com.michaelfmnk.aldrin.services;
 import com.michaelfmnk.aldrin.dtos.Pagination;
 import com.michaelfmnk.aldrin.dtos.PostDto;
 import com.michaelfmnk.aldrin.dtos.UserDto;
+import com.michaelfmnk.aldrin.dtos.VerificationCodeContainer;
 import com.michaelfmnk.aldrin.dtos.params.PageSortParams;
 import com.michaelfmnk.aldrin.dtos.params.PageSortRequest;
 import com.michaelfmnk.aldrin.entities.Post;
 import com.michaelfmnk.aldrin.entities.User;
+import com.michaelfmnk.aldrin.entities.VerificationCode;
+import com.michaelfmnk.aldrin.exceptions.BadRequestException;
 import com.michaelfmnk.aldrin.repositories.PostRepository;
 import com.michaelfmnk.aldrin.repositories.UserRepository;
+import com.michaelfmnk.aldrin.repositories.VerificationCodeRepository;
 import com.michaelfmnk.aldrin.security.JwtUserFactory;
 import com.michaelfmnk.aldrin.utils.ConverterService;
+import com.michaelfmnk.aldrin.utils.MessagesService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,6 +26,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,6 +39,8 @@ public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
     private final PostRepository postRepository;
     private final ConverterService converterService;
+    private final MessagesService messagesService;
+    private final VerificationCodeRepository verificationCodeRepository;
 
     @Override
     public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
@@ -78,5 +86,25 @@ public class UserService implements UserDetailsService {
             return;
         }
         throw new EntityNotFoundException(format("no user found with id=%s", userId));
+    }
+
+    @Transactional
+    public void verifyCode(Integer userId, VerificationCodeContainer verificationCode) {
+        User user = findValidUserById(userId);
+        if (user.isEnabled()) {
+            throw new BadRequestException(messagesService.getMessage("user.activated.already"));
+        }
+
+        VerificationCode code = verificationCodeRepository
+                .findById(VerificationCode.VerificationCodePK.builder()
+                        .userId(userId)
+                        .verificationCode(verificationCode.getCode())
+                        .build())
+                .orElseThrow(() -> new BadRequestException(messagesService.getMessage("code.not.valid")));
+
+        user.setEnabled(true);
+        userRepository.save(user);
+
+        verificationCodeRepository.delete(code);
     }
 }

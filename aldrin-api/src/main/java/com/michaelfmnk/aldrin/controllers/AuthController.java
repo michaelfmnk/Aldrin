@@ -3,6 +3,7 @@ package com.michaelfmnk.aldrin.controllers;
 
 import com.michaelfmnk.aldrin.dtos.AuthRequest;
 import com.michaelfmnk.aldrin.dtos.TokenContainer;
+import com.michaelfmnk.aldrin.dtos.UserDto;
 import com.michaelfmnk.aldrin.services.AuthService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -40,7 +41,7 @@ public class AuthController {
 
     @PostMapping(Api.Auth.SIGN_UP)
     @ResponseStatus(HttpStatus.CREATED)
-    public void registerUser(@RequestBody @Validated AuthRequest request) {
-        authService.signUp(request);
+    public UserDto registerUser(@RequestBody @Validated AuthRequest request) {
+        return authService.register(request);
     }
 }

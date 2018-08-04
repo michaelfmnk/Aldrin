@@ -56,6 +56,7 @@ public class WebConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeRequests()
                 .antMatchers("/aldrin-api/auth/**").permitAll()
+                .antMatchers("/aldrin-api/users/*/verify").permitAll()
                 .antMatchers(
                         "/v2/api-docs",
                         "/configuration/ui",

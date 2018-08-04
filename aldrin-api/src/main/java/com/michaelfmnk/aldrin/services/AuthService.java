@@ -2,6 +2,7 @@ package com.michaelfmnk.aldrin.services;
 
 import com.michaelfmnk.aldrin.dtos.AuthRequest;
 import com.michaelfmnk.aldrin.dtos.TokenContainer;
+import com.michaelfmnk.aldrin.dtos.UserDto;
 import com.michaelfmnk.aldrin.entities.User;
 import com.michaelfmnk.aldrin.entities.VerificationCode;
 import com.michaelfmnk.aldrin.entities.VerificationCode.VerificationCodePK;
@@ -13,6 +14,7 @@ import com.michaelfmnk.aldrin.security.JwtTokenUtil;
 import com.michaelfmnk.aldrin.security.JwtUser;
 import com.michaelfmnk.aldrin.security.JwtUserFactory;
 import com.michaelfmnk.aldrin.utils.CodeGenerator;
+import com.michaelfmnk.aldrin.utils.ConverterService;
 import com.michaelfmnk.aldrin.utils.MessagesService;
 import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -40,6 +42,7 @@ public class AuthService {
     private final UserService userService;
     private final MailjetService mailjetService;
     private final VerificationCodeRepository verificationCodeRepository;
+    private final ConverterService converterService;
 
 
     @Transactional
@@ -58,7 +61,7 @@ public class AuthService {
         return new TokenContainer(token);
     }
 
-    public void signUp(AuthRequest request) {
+    public UserDto register(AuthRequest request) {
         if (userRepository.existsByLogin(request.getLogin())) {
             throw new BadRequestException(messagesService.getMessage("user.already.exists"));
         }
@@ -78,6 +81,7 @@ public class AuthService {
                 request.getLogin(),
                 messagesService.getMessage("mailjet.signup.subject"),
                 code);
+        return converterService.toDto(user);
     }
 
     public TokenContainer refreshToken(HttpServletRequest request) {

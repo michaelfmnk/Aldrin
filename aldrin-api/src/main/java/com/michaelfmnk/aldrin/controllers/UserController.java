@@ -3,6 +3,7 @@ package com.michaelfmnk.aldrin.controllers;
 import com.michaelfmnk.aldrin.dtos.Pagination;
 import com.michaelfmnk.aldrin.dtos.PostDto;
 import com.michaelfmnk.aldrin.dtos.UserDto;
+import com.michaelfmnk.aldrin.dtos.VerificationCodeContainer;
 import com.michaelfmnk.aldrin.dtos.params.PageSortParams;
 import com.michaelfmnk.aldrin.services.UserService;
 import lombok.AllArgsConstructor;
@@ -24,5 +25,11 @@ public class UserController {
     public Pagination<PostDto> getUserPosts(@PathVariable("user_id") Integer userId,
                                             @ModelAttribute PageSortParams params) {
         return userService.findUserPosts(userId, params);
+    }
+
+    @PostMapping(Api.Users.VERIFY)
+    public void verifyCode(@PathVariable("user_id") Integer userId,
+                           @RequestBody VerificationCodeContainer verificationCode) {
+        userService.verifyCode(userId, verificationCode);
     }
 }
