@@ -16,10 +16,10 @@ storage:
   location: upload-dir
 
 auth:
-  secret: [credentials]
+  secret: mySecret
   expiration: 604800
   headerName: Authorization
 
 mailjet:
-  publicKey: [credentials]
-  privateKey: [credentials]
+  publicKey: credentials
+  privateKey: credentials

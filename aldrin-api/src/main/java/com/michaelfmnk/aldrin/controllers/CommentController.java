@@ -4,6 +4,7 @@ import com.michaelfmnk.aldrin.dtos.CommentDto;
 import com.michaelfmnk.aldrin.security.UserAuthentication;
 import com.michaelfmnk.aldrin.services.CommentService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,5 +24,12 @@ public class CommentController {
                 .userId(auth.getId())
                 .build();
         return commentService.updateComment(commentId, commentDto);
+    }
+
+    @DeleteMapping(Api.Comments.COMMENT_BY_ID)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasPermission(#commentId, 'OWN_COMMENT', 'USER') or hasAuthority('ADMIN')")
+    public void deleteComment(@PathVariable("comment_id") Integer commentId) {
+        commentService.deleteCommentById(commentId);
     }
 }

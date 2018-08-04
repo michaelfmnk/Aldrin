@@ -1,4 +1,4 @@
-package com.michaelfmnk.aldrin.controllers;
+package com.michaelfmnk.aldrin.controllers.comment;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.michaelfmnk.aldrin.BaseTest;
@@ -13,8 +13,7 @@ import static org.assertj.db.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 
-public class CommentControllerTest extends BaseTest {
-
+public class PutCommentTest extends BaseTest {
     @Test
     public void shouldEditComment() throws JsonProcessingException {
         CommentDto commentDto = CommentDto.builder()
