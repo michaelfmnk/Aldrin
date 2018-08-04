@@ -8,9 +8,11 @@ build-api:
   before_script:
     - cd ./aldrin-api/
   script:
-    - ./mvnw package
+    - ./mvnw package &> maven.log
   after_script:
     - cd /
   artifacts:
     paths:
       - target/demo-0.0.1-SNAPSHOT.jar
+      - maven.log
+    when: always
