@@ -13,6 +13,6 @@ build-api:
     - cd /
   artifacts:
     paths:
-      - aldring-api/target/aldrin-0.0.1-SNAPSHOT.jar
-      - aldring-api/maven.log
+      - target/aldrin-0.0.1-SNAPSHOT.jar
+      - maven.log
     when: always
