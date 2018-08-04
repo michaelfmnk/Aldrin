@@ -18,6 +18,9 @@ import java.util.List;
 @AllArgsConstructor
 @Entity(name = "users")
 public class User {
+
+    public static final String USER_ID = "userId";
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer userId;

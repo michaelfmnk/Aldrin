@@ -9,7 +9,9 @@ public final class Api {
 
     public static final class Users {
         private Users() {}
+
         public static final String USER_BY_USERNAME = "/users/{username}";
+        public static final String USER_POSTS = "/users/{user_id}/posts";
     }
 
     public static final class Posts {
