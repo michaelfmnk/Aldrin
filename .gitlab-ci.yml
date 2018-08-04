@@ -5,8 +5,8 @@ services:
   - docker:dind
 
 stages:
-  - build-api
   - build-ui
+  - build-api
 
 build-api:
   image: docker:latest
@@ -34,9 +34,12 @@ build-ui:
   image: node:8
   stage: build-ui
   before_script:
+    - cd /aldrin-ui/
     - curl -o- -L https://yarnpkg.com/install.sh | bash
     - export PATH="$HOME/.yarn/bin:$PATH"
     - yarn install
   script:
     - yarn build
+  after_script:
+      - cd /
 
