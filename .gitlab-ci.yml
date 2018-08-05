@@ -26,7 +26,7 @@ build-api:
     - cd /
   artifacts:
     paths:
-      - /aldrin-api/target/aldrin-0.0.1-SNAPSHOT.jar
+      - ./aldrin-api/target/aldrin-0.0.1-SNAPSHOT.jar
     when: always
 
 
