@@ -41,5 +41,5 @@ build-ui:
   script:
     - yarn build
   after_script:
-      - cd /
+    - cd /
 

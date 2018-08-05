@@ -35,7 +35,9 @@ public class RegisterTest extends BaseTest {
                 .then()
                 .extract().response().prettyPeek()
                 .then()
-                .statusCode(HttpStatus.SC_CREATED);
+                .statusCode(HttpStatus.SC_CREATED)
+                .body("id", notNullValue())
+                .body("login", equalTo("meteormf99@gmail.com"));
 
         verify(mailjetClient, times(1)).post(any(MailjetRequest.class));
 

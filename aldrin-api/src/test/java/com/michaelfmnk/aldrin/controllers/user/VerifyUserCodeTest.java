@@ -34,6 +34,12 @@ public class VerifyUserCodeTest extends BaseTest {
                 "SELECT * FROM verification_codes WHERE verification_code='123321' AND user_id=1"))
                 .hasNumberOfRows(0);
 
+        assertThat(new Request(dataSource,
+                "SELECT enabled FROM users WHERE user_id=1"))
+                .hasNumberOfRows(1)
+                .row(0)
+                .value("enabled").isEqualTo(true);
+
     }
 
     @Test
@@ -58,6 +64,12 @@ public class VerifyUserCodeTest extends BaseTest {
         assertThat(new Request(dataSource,
                 "SELECT * FROM verification_codes WHERE verification_code='123321' AND user_id=1"))
                 .hasNumberOfRows(1);
+
+        assertThat(new Request(dataSource,
+                "SELECT enabled FROM users WHERE user_id=1"))
+                .hasNumberOfRows(1)
+                .row(0)
+                .value("enabled").isEqualTo(false);
     }
 
     @Test
@@ -78,5 +90,11 @@ public class VerifyUserCodeTest extends BaseTest {
                 .body("detail", equalTo("User is already enabled"))
                 .body("time_stamp", notNullValue())
                 .body("dev_message", equalTo("com.michaelfmnk.aldrin.exceptions.BadRequestException"));
+
+        assertThat(new Request(dataSource,
+                "SELECT enabled FROM users WHERE user_id=2"))
+                .hasNumberOfRows(1)
+                .row(0)
+                .value("enabled").isEqualTo(true);
     }
 }
