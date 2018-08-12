@@ -2,9 +2,6 @@ package com.michaelfmnk.aldrin;
 
 import com.michaelfmnk.aldrin.props.AuthProperties;
 import com.michaelfmnk.aldrin.props.MailjetProperties;
-import com.michaelfmnk.aldrin.storage.StorageProperties;
-import com.michaelfmnk.aldrin.storage.StorageService;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -13,7 +10,7 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 @SpringBootApplication
-@EnableConfigurationProperties({StorageProperties.class, AuthProperties.class, MailjetProperties.class})
+@EnableConfigurationProperties({AuthProperties.class, MailjetProperties.class})
 public class AldrinApplication {
 
 	public static void main(String[] args) {
@@ -34,18 +31,4 @@ public class AldrinApplication {
 		};
 	}
 
-
-	/**
-	 * deletes all uploaded data,
-	 * then creates dir if it doesn't exist
-	 * @param storageService service for soring data
-	 */
-	@Bean
-	CommandLineRunner init(StorageService storageService){
-		return (args) -> {
-			storageService.deleteAll();
-			storageService.init();
-		};
-
-	}
 }
