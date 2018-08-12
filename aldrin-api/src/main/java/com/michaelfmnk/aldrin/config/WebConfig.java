@@ -1,5 +1,6 @@
 package com.michaelfmnk.aldrin.config;
 
+import com.michaelfmnk.aldrin.controllers.Api;
 import com.michaelfmnk.aldrin.security.JwtAuthenticationEntryPoint;
 import com.michaelfmnk.aldrin.security.JwtAuthenticationTokenFilter;
 import lombok.AllArgsConstructor;
@@ -55,15 +56,19 @@ public class WebConfig extends WebSecurityConfigurerAdapter {
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and() // don't create session
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeRequests()
-                .antMatchers("/aldrin-api/auth/**").permitAll()
-                .antMatchers("/aldrin-api/users/*/verify").permitAll()
+                .antMatchers(
+                        Api.ROOT_PATH + Api.Auth.AUTH + "/**",
+                        Api.ROOT_PATH + Api.Users.USERS + "/*" + "/verify",
+                        Api.ROOT_PATH + Api.Common.GIT_LOG
+                ).permitAll()
                 .antMatchers(
                         "/v2/api-docs",
                         "/configuration/ui",
                         "/swagger-resources/**",
                         "/configuration/**",
                         "/swagger-ui.html",
-                        "/webjars/**").permitAll()
+                        "/webjars/**"
+                ).permitAll()
                 .anyRequest().authenticated();
         http.addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class);
         http.headers().cacheControl();

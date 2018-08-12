@@ -7,9 +7,18 @@ public final class Api {
     public static final String ROOT_PATH = "/aldrin-api";
     public static final String FEED = "/feed";
 
+    public static final class Common {
+
+        private Common() {
+        }
+
+        public static final String GIT_LOG = "/gitlog";
+    }
+
     public static final class Users {
         private Users() {}
 
+        public static final String USERS = "/users";
         public static final String USER_BY_USERNAME = "/users/{username}";
         public static final String USER_POSTS = "/users/{user_id}/posts";
         public static final String VERIFY = "/users/{user_id}/verify";
@@ -33,6 +42,8 @@ public final class Api {
     public static final class Auth {
         private Auth() {
         }
+
+        public static final String AUTH = "/auth";
         public static final String SIGN_UP = "/auth/sign-up";
         public static final String LOGIN = "/auth/login";
     }

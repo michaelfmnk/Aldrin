@@ -26,6 +26,7 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
+import java.util.Objects;
 
 @Service
 @AllArgsConstructor
@@ -47,7 +48,9 @@ public class AuthService {
 
     @Transactional
     public TokenContainer createToken(AuthRequest request) {
-        User user = userService.findValidUserByLogin(request.getLogin());
+        User user = Objects.isNull(request.getLogin())
+                ? null
+                : userService.findValidUserByLogin(request.getLogin());
         final Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getLogin(),
