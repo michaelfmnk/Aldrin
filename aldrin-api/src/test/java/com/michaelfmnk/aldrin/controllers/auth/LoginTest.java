@@ -67,6 +67,23 @@ public class LoginTest extends BaseTest {
                 .body("detail", equalTo("Bad credentials"))
                 .body("time_stamp", notNullValue())
                 .body("dev_message", equalTo("org.springframework.security.authentication.BadCredentialsException"));
+
+        authRequest.setPassword(null);
+        given()
+                .accept(ContentType.JSON)
+                .contentType(ContentType.JSON)
+                .body(objectMapper.writeValueAsBytes(authRequest))
+                .when()
+                .post("/aldrin-api/auth/login")
+                .then()
+                .extract().response().prettyPeek()
+                .then()
+                .statusCode(HttpStatus.SC_UNAUTHORIZED)
+                .body("title", equalTo("UNAUTHORIZED"))
+                .body("status", equalTo(401))
+                .body("detail", equalTo("Bad credentials"))
+                .body("time_stamp", notNullValue())
+                .body("dev_message", equalTo("org.springframework.security.authentication.BadCredentialsException"));
     }
 
     @Test
@@ -90,6 +107,51 @@ public class LoginTest extends BaseTest {
                 .body("detail", equalTo("User is disabled"))
                 .body("time_stamp", notNullValue())
                 .body("dev_message", equalTo("org.springframework.security.authentication.DisabledException"));
+    }
+
+    @Test
+    public void shouldFailLoginOnUserNotFound() throws JsonProcessingException {
+        AuthRequest authRequest = AuthRequest.builder()
+                .login("fakeLogin")
+                .build();
+        given()
+                .accept(ContentType.JSON)
+                .contentType(ContentType.JSON)
+                .body(objectMapper.writeValueAsBytes(authRequest))
+                .when()
+                .post("/aldrin-api/auth/login")
+                .then()
+                .extract().response().prettyPeek()
+                .then()
+                .statusCode(HttpStatus.SC_NOT_FOUND)
+                .body("title", equalTo("NOT_FOUND"))
+                .body("status", equalTo(404))
+                .body("detail", equalTo("no user found with login=fakeLogin"))
+                .body("time_stamp", notNullValue())
+                .body("dev_message", equalTo("javax.persistence.EntityNotFoundException"));
+    }
+
+    @Test
+    public void shouldFailLoginOnUnprocessableEntity() throws JsonProcessingException {
+        AuthRequest authRequest = AuthRequest.builder()
+                .password("asldkfj;alksdjf;laksjd;flkaj")
+                .build();
+        given()
+                .accept(ContentType.JSON)
+                .contentType(ContentType.JSON)
+                .body(objectMapper.writeValueAsBytes(authRequest))
+                .when()
+                .post("/aldrin-api/auth/login")
+                .then()
+                .extract().response().prettyPeek()
+                .then()
+                .statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY)
+                .body("title", equalTo("UNPROCESSABLE_ENTITY"))
+                .body("status", equalTo(422))
+                .body("detail", equalTo("login is not provided"))
+                .body("time_stamp", notNullValue())
+                .body("dev_message", equalTo("org.springframework.security.authentication.InternalAuthenticationServiceException"));
+
     }
 
 }

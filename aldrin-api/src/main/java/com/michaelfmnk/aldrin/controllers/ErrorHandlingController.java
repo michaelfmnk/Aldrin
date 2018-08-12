@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -41,6 +42,18 @@ public class ErrorHandlingController extends ResponseEntityExceptionHandler {
                 .cause(e)
                 .timeStamp(timeProvider.getDate())
                 .build();
+        return errorDetailDto;
+    }
+
+    @ExceptionHandler(InternalAuthenticationServiceException.class)
+    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+    public ErrorDetailDto exceptionHandler(InternalAuthenticationServiceException e) {
+        ErrorDetailDto errorDetailDto = ErrorDetailDto.builder()
+                .status(HttpStatus.UNPROCESSABLE_ENTITY)
+                .cause(e)
+                .timeStamp(timeProvider.getDate())
+                .build();
+        errorDetailDto.setDetail("login is not provided");
         return errorDetailDto;
     }
 
