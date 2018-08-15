@@ -2,6 +2,8 @@ package com.michaelfmnk.aldrindocs.services;
 
 import com.google.common.io.Files;
 import com.michaelfmnk.aldrindocs.dtos.DocumentDto;
+import com.michaelfmnk.aldrindocs.dtos.DocumentResponseDto;
+import com.michaelfmnk.aldrindocs.dtos.MoveDocumentDto;
 import com.michaelfmnk.aldrindocs.entities.Document;
 import com.michaelfmnk.aldrindocs.exceptions.BadRequestException;
 import com.michaelfmnk.aldrindocs.repositories.DocumentRepository;
@@ -21,7 +23,8 @@ import javax.transaction.Transactional;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static java.lang.String.format;
 
@@ -37,25 +40,27 @@ public class StorageService {
     public void deleteTemporaryFile(UUID fileId) throws IOException {
         log.info(format("deleting tmp-file: file_id = %s", fileId));
         Document doc = documentRepository.findByFileIdAndAndDataIdIsNull(fileId)
-                .orElseThrow(() -> new EntityNotFoundException(format("File not found")));
+                .orElseThrow(() -> new EntityNotFoundException("File not found"));
         storageUtils.deleteTemporaryFile(fileId);
         documentRepository.delete(doc);
     }
 
-    public void deleteFile() {
-
+    public void deleteFiles(Set<UUID> fileIds) {
+        log.info(format("Deleting files, ids = %s", fileIds));
+        List<Document> docs = documentRepository.findByFileIdIn(fileIds);
+        if (!Objects.equals(fileIds.size(), docs.size())) {
+            throw new EntityNotFoundException("No files were found");
+        }
+        documentRepository.deleteInBatch(docs);
+        fileIds.forEach(storageUtils::deleteFile);
     }
 
-    public void deleteFileByDataId() {
-
-    }
-
-    public void failIfFileNotValid(String fileName) {
+    private void failIfFileNotValid(String fileName) {
         if (!storageUtils.checkFileFormat(Files.getFileExtension(fileName))) {
-            throw new BadRequestException(format("not acceptable file type"));
+            throw new BadRequestException("not acceptable file type");
         }
         if (!storageUtils.checkFileNameLength(fileName)) {
-            throw new BadRequestException(format("file name is too long"));
+            throw new BadRequestException("file name is too long");
         }
     }
 
@@ -84,21 +89,50 @@ public class StorageService {
         Metadata meta = new Metadata();
         try (InputStream inputStream = file.getInputStream()) {
             new AutoDetectParser().parse(inputStream, new BodyContentHandler(), meta);
-
         }
         return meta.get(Metadata.CONTENT_TYPE);
     }
 
-    public void downloadFile() { //todo dto
+    public DocumentResponseDto downloadFile(UUID fileId) throws IOException {
+        Document doc = documentRepository.findByFileId(fileId)
+                .orElseThrow(() -> new EntityNotFoundException("Document not found"));
+        byte[] file = storageUtils.getFile(fileId);
+        return DocumentResponseDto.builder()
+                .file(file)
+                .mime(doc.getMime())
+                .build();
+    }
+
+    public List<DocumentDto> moveFiles(List<MoveDocumentDto> docsToMove) throws IOException {
+        List<DocumentDto> fileDtos = new ArrayList<>(docsToMove.size());
+
+        for (MoveDocumentDto item : docsToMove) {
+            fileDtos.add(moveFile(item.getFileId(), item.getDataId()));
+        }
+
+        return fileDtos;
 
     }
 
-    public void moveFileToPermanentLocation() { //todo fileDto
+    private DocumentDto moveFile(UUID fileId, Integer dataId) throws IOException {
+        log.info(format("moving documents from temporary storage: fileId = %s & dataId = %s", fileId, dataId));
+        Document doc = documentRepository.findByFileIdAndAndDataIdIsNull(fileId)
+                .orElseThrow(() -> new EntityNotFoundException("File not found"));
 
+        storageUtils.moveFileToPermanentLocation(fileId);
+        doc.setDataId(dataId);
+        doc = documentRepository.save(doc);
+        return converterService.toDto(doc);
     }
 
-    public void getFiles() { //todo list of fileDto
+    public List<DocumentDto> getFiles(Set<UUID> fileIds) { //todo list of fileDto
+        List<Document> documents = documentRepository.findByFileIdIn(fileIds);
+        if (!Objects.equals(fileIds.size(), documents.size())) {
+            throw new EntityNotFoundException("No files were found");
+        }
+        return documents.stream()
+                .map(converterService::toDto)
+                .collect(Collectors.toList());
 
     }
-
 }
