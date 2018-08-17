@@ -78,7 +78,7 @@ public class RegisterTest extends BaseTest {
                 .body("title", equalTo("INTERNAL_SERVER_ERROR"))
                 .body("status", equalTo(500))
                 .body("detail", equalTo("Oops. Something went wrong while sending verification email. Try again later"))
-                .body("time_stamp", notNullValue())
+                .body("timestamp", notNullValue())
                 .body("dev_message", equalTo("java.lang.RuntimeException"));
     }
 
@@ -102,7 +102,7 @@ public class RegisterTest extends BaseTest {
                 .body("title", equalTo("UNPROCESSABLE_ENTITY"))
                 .body("status", equalTo(422))
                 .body("detail", equalTo("must be a well-formed email address"))
-                .body("time_stamp", notNullValue())
+                .body("timestamp", notNullValue())
                 .body("dev_message", equalTo("org.springframework.web.bind.MethodArgumentNotValidException"));
 
         authRequest = AuthRequest.builder()
@@ -123,7 +123,7 @@ public class RegisterTest extends BaseTest {
                 .body("title", equalTo("UNPROCESSABLE_ENTITY"))
                 .body("status", equalTo(422))
                 .body("detail", equalTo("Invalid password"))
-                .body("time_stamp", notNullValue())
+                .body("timestamp", notNullValue())
                 .body("dev_message", equalTo("org.springframework.web.bind.MethodArgumentNotValidException"));
     }
 

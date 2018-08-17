@@ -58,7 +58,7 @@ public class PutCommentTest extends BaseTest {
                 .body("title", equalTo("FORBIDDEN"))
                 .body("status", equalTo(403))
                 .body("detail", equalTo("Access is denied"))
-                .body("time_stamp", notNullValue())
+                .body("timestamp", notNullValue())
                 .body("dev_message", equalTo("org.springframework.security.access.AccessDeniedException"));
     }
 }

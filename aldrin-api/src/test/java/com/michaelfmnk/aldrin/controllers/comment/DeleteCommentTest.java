@@ -45,7 +45,7 @@ public class DeleteCommentTest extends BaseTest {
                 .body("title", equalTo("FORBIDDEN"))
                 .body("status", equalTo(403))
                 .body("detail", equalTo("Access is denied"))
-                .body("time_stamp", notNullValue())
+                .body("timestamp", notNullValue())
                 .body("dev_message", equalTo("org.springframework.security.access.AccessDeniedException"));
 
         assertThat(new Request(dataSource, "SELECT content FROM comments WHERE comment_id=3"))

@@ -58,7 +58,7 @@ public class VerifyUserCodeTest extends BaseTest {
                 .body("title", equalTo("BAD_REQUEST"))
                 .body("status", equalTo(400))
                 .body("detail", equalTo("Verification code is not valid"))
-                .body("time_stamp", notNullValue())
+                .body("timestamp", notNullValue())
                 .body("dev_message", equalTo("com.michaelfmnk.aldrin.exceptions.BadRequestException"));
 
         assertThat(new Request(dataSource,
@@ -88,7 +88,7 @@ public class VerifyUserCodeTest extends BaseTest {
                 .body("title", equalTo("BAD_REQUEST"))
                 .body("status", equalTo(400))
                 .body("detail", equalTo("User is already enabled"))
-                .body("time_stamp", notNullValue())
+                .body("timestamp", notNullValue())
                 .body("dev_message", equalTo("com.michaelfmnk.aldrin.exceptions.BadRequestException"));
 
         assertThat(new Request(dataSource,

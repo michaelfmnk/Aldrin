@@ -67,7 +67,7 @@ public class PostCommentOnPostTest extends BaseTest {
                 .body("title", equalTo("NOT_FOUND"))
                 .body("status", equalTo(404))
                 .body("detail", equalTo("Post not found"))
-                .body("time_stamp", notNullValue())
+                .body("timestamp", notNullValue())
                 .body("dev_message", equalTo("javax.persistence.EntityNotFoundException"));
     }
 

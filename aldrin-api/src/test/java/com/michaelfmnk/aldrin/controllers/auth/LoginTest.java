@@ -65,7 +65,7 @@ public class LoginTest extends BaseTest {
                 .body("title", equalTo("UNAUTHORIZED"))
                 .body("status", equalTo(401))
                 .body("detail", equalTo("Bad credentials"))
-                .body("time_stamp", notNullValue())
+                .body("timestamp", notNullValue())
                 .body("dev_message", equalTo("org.springframework.security.authentication.BadCredentialsException"));
 
         authRequest.setPassword(null);
@@ -82,7 +82,7 @@ public class LoginTest extends BaseTest {
                 .body("title", equalTo("UNAUTHORIZED"))
                 .body("status", equalTo(401))
                 .body("detail", equalTo("Bad credentials"))
-                .body("time_stamp", notNullValue())
+                .body("timestamp", notNullValue())
                 .body("dev_message", equalTo("org.springframework.security.authentication.BadCredentialsException"));
     }
 
@@ -105,7 +105,7 @@ public class LoginTest extends BaseTest {
                 .body("title", equalTo("METHOD_NOT_ALLOWED"))
                 .body("status", equalTo(405))
                 .body("detail", equalTo("User is disabled"))
-                .body("time_stamp", notNullValue())
+                .body("timestamp", notNullValue())
                 .body("dev_message", equalTo("org.springframework.security.authentication.DisabledException"));
     }
 
@@ -127,7 +127,7 @@ public class LoginTest extends BaseTest {
                 .body("title", equalTo("NOT_FOUND"))
                 .body("status", equalTo(404))
                 .body("detail", equalTo("no user found with login=fakeLogin"))
-                .body("time_stamp", notNullValue())
+                .body("timestamp", notNullValue())
                 .body("dev_message", equalTo("javax.persistence.EntityNotFoundException"));
     }
 
@@ -149,7 +149,7 @@ public class LoginTest extends BaseTest {
                 .body("title", equalTo("UNPROCESSABLE_ENTITY"))
                 .body("status", equalTo(422))
                 .body("detail", equalTo("login is not provided"))
-                .body("time_stamp", notNullValue())
+                .body("timestamp", notNullValue())
                 .body("dev_message", equalTo("org.springframework.security.authentication.InternalAuthenticationServiceException"));
 
     }
