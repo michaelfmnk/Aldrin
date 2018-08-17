@@ -4,7 +4,7 @@ public final class Api {
     private Api() {
     }
 
-    public static final String ROOT_PATH = "/docs-api";
+    public static final String ROOT_PATH = "/aldrin-docs-api";
 
     public static final class TemporaryStorage {
         private TemporaryStorage() {

@@ -1,12 +1,23 @@
 package com.michaelfmnk.aldrindocs;
 
+import com.michaelfmnk.aldrindocs.properties.StorageProperties;
+import io.restassured.RestAssured;
+import org.apache.commons.io.FileUtils;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.BDDMockito;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlGroup;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 
 @SqlGroup({@Sql(value = {"classpath:test-clean.sql"}), @Sql})
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -14,10 +25,36 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 public class BaseTest {
     @LocalServerPort
     protected Integer port;
+    @MockBean
+    private StorageProperties storageProperties;
 
+    private static final String PERMANENT = "permanent";
+    private static final String TEMPORARY = "temporary";
+
+    protected String testDir =
+            new File(getClass().getClassLoader().getResource("files").getPath()).getAbsolutePath();
+    protected String permanentStorage = new File(testDir, PERMANENT).getAbsolutePath();
+    protected String temporaryStorage = new File(testDir, TEMPORARY).getAbsolutePath();
+
+    @Before
+    public void setup() throws IOException {
+        RestAssured.port = port;
+
+        BDDMockito.given(storageProperties.getTemporaryLocation()).willReturn(temporaryStorage);
+        BDDMockito.given(storageProperties.getPermanentLocation()).willReturn(permanentStorage);
+
+        Files.createDirectory(new File(temporaryStorage).toPath());
+        Files.createDirectories(new File(permanentStorage).toPath());
+    }
 
     @Test
     public void contextLoads() {
+    }
+
+    @After
+    public void after() throws IOException {
+        FileUtils.deleteDirectory(new File(temporaryStorage));
+        FileUtils.deleteDirectory(new File(permanentStorage));
     }
 
 }

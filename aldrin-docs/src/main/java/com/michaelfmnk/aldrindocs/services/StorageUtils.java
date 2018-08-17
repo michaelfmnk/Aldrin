@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -26,7 +25,6 @@ public class StorageUtils {
     private static final int BYTES_IN_KB = 1024;
     private final StorageProperties storageProperties;
 
-    @PostConstruct
     public void init() {
         try {
             Path tmpLocation = Paths.get(storageProperties.getTemporaryLocation());
