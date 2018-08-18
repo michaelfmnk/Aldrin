@@ -2,7 +2,7 @@ package com.michaelfmnk.aldrindocs.services;
 
 import com.michaelfmnk.aldrindocs.dtos.DocumentDto;
 import com.michaelfmnk.aldrindocs.entities.Document;
-import com.michaelfmnk.aldrindocs.validation.IfNullReturnNull;
+import com.michaelfmnk.aldrindocs.utils.IfNullReturnNull;
 import org.springframework.stereotype.Service;
 
 @Service

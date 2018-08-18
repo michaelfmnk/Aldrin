@@ -25,24 +25,6 @@ public class StorageUtils {
     private static final int BYTES_IN_KB = 1024;
     private final StorageProperties storageProperties;
 
-    public void init() {
-        try {
-            Path tmpLocation = Paths.get(storageProperties.getTemporaryLocation());
-            Path permanentLocation = Paths.get(storageProperties.getTemporaryLocation());
-
-            if (!exists(tmpLocation)) {
-                createDirectories(tmpLocation);
-                log.info("creating temporary directory");
-            }
-            if (!exists(tmpLocation)) {
-                createDirectories(permanentLocation);
-                log.info("creating permanent directory");
-            }
-        } catch (IOException e) {
-            log.error("couldn't create directory", e);
-        }
-    }
-
     public double bytesToKb(long bytes) {
         return bytes / BYTES_IN_KB;
     }
