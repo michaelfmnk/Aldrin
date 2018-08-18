@@ -22,7 +22,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
-        <docker.image.name>aldrin/aldrin-docs</docker.image.name>
+        <docker.image.name>aldrin/aldrin-docs-api</docker.image.name>
         <docker.image.tag>latest</docker.image.tag>
     </properties>
 
@@ -107,6 +107,11 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-collections4</artifactId>
             <version>4.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-db</artifactId>
+            <version>1.2.0</version>
         </dependency>
         <dependency>
             <groupId>org.testcontainers</groupId>

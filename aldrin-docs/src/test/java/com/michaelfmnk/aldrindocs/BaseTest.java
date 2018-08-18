@@ -1,5 +1,6 @@
 package com.michaelfmnk.aldrindocs;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.michaelfmnk.aldrindocs.properties.AuthProperties;
 import com.michaelfmnk.aldrindocs.properties.StorageProperties;
 import io.restassured.RestAssured;
@@ -18,9 +19,12 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlGroup;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import javax.sql.DataSource;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+
+import static org.junit.Assert.assertTrue;
 
 @SqlGroup({@Sql(value = {"classpath:test-clean.sql"}), @Sql})
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -29,9 +33,13 @@ public class BaseTest {
     @LocalServerPort
     protected Integer port;
     @MockBean
-    private StorageProperties storageProperties;
+    protected StorageProperties storageProperties;
     @Autowired
     protected AuthProperties authProperties;
+    @Autowired
+    protected ObjectMapper objectMapper;
+    @Autowired
+    protected DataSource dataSource;
 
     private static final String PERMANENT = "permanent";
     private static final String TEMPORARY = "temporary";
@@ -50,6 +58,7 @@ public class BaseTest {
 
         BDDMockito.given(storageProperties.getTemporaryLocation()).willReturn(temporaryStorage);
         BDDMockito.given(storageProperties.getPermanentLocation()).willReturn(permanentStorage);
+        BDDMockito.given(storageProperties.getMaxNameLength()).willReturn(100);
 
         Files.createDirectory(new File(temporaryStorage).toPath());
         Files.createDirectories(new File(permanentStorage).toPath());
@@ -69,6 +78,7 @@ public class BaseTest {
 
     @Test
     public void contextLoads() {
+        assertTrue(true);
     }
 
     @After

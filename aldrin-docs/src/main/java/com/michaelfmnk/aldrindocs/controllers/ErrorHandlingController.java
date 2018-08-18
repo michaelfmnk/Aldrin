@@ -1,6 +1,7 @@
 package com.michaelfmnk.aldrindocs.controllers;
 
 import com.michaelfmnk.aldrindocs.dtos.ErrorDetailDto;
+import com.michaelfmnk.aldrindocs.exceptions.BadRequestException;
 import com.michaelfmnk.aldrindocs.utils.TimeProvider;
 import lombok.AllArgsConstructor;
 import lombok.extern.apachecommons.CommonsLog;
@@ -27,6 +28,18 @@ public class ErrorHandlingController extends ResponseEntityExceptionHandler {
     public ErrorDetailDto exceptionHandler(EntityNotFoundException e) {
         ErrorDetailDto errorDetailDto = ErrorDetailDto.builder()
                 .status(HttpStatus.NOT_FOUND)
+                .cause(e)
+                .timeStamp(timeProvider.getDate())
+                .build();
+        return errorDetailDto;
+    }
+
+
+    @ExceptionHandler(BadRequestException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorDetailDto exceptionHandler(BadRequestException e) {
+        ErrorDetailDto errorDetailDto = ErrorDetailDto.builder()
+                .status(HttpStatus.BAD_REQUEST)
                 .cause(e)
                 .timeStamp(timeProvider.getDate())
                 .build();

@@ -40,7 +40,7 @@ public class StorageService {
     public void deleteTemporaryFile(UUID fileId) throws IOException {
         log.info(format("deleting tmp-file: file_id = %s", fileId));
         Document doc = documentRepository.findByFileIdAndAndDataIdIsNull(fileId)
-                .orElseThrow(() -> new EntityNotFoundException("File not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Document not found"));
         storageUtils.deleteTemporaryFile(fileId);
         documentRepository.delete(doc);
     }
@@ -49,7 +49,7 @@ public class StorageService {
         log.info(format("Deleting files, ids = %s", fileIds));
         List<Document> docs = documentRepository.findByFileIdIn(fileIds);
         if (!Objects.equals(fileIds.size(), docs.size())) {
-            throw new EntityNotFoundException("No files were found");
+            throw new EntityNotFoundException("No documents were found");
         }
         documentRepository.deleteInBatch(docs);
         fileIds.forEach(storageUtils::deleteFile);
@@ -80,7 +80,7 @@ public class StorageService {
                 .size(BigDecimal.valueOf(storageUtils.bytesToKb(file.getSize())))
                 .build();
 
-        storageUtils.saveFileInTemporaryLocation(file, fileBaseName);
+        storageUtils.saveFileInTemporaryLocation(file, uuid.toString());
         docToUpload = documentRepository.save(docToUpload);
         return converterService.toDto(docToUpload);
     }
@@ -111,13 +111,12 @@ public class StorageService {
         }
 
         return fileDtos;
-
     }
 
     private DocumentDto moveFile(UUID fileId, Integer dataId) throws IOException {
         log.info(format("moving documents from temporary storage: fileId = %s & dataId = %s", fileId, dataId));
         Document doc = documentRepository.findByFileIdAndAndDataIdIsNull(fileId)
-                .orElseThrow(() -> new EntityNotFoundException("File not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Document not found"));
 
         storageUtils.moveFileToPermanentLocation(fileId);
         doc.setDataId(dataId);
@@ -128,7 +127,7 @@ public class StorageService {
     public List<DocumentDto> getFiles(Set<UUID> fileIds) { //todo list of fileDto
         List<Document> documents = documentRepository.findByFileIdIn(fileIds);
         if (!Objects.equals(fileIds.size(), documents.size())) {
-            throw new EntityNotFoundException("No files were found");
+            throw new EntityNotFoundException("No documents were found");
         }
         return documents.stream()
                 .map(converterService::toDto)

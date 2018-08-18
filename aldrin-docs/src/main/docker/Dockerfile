@@ -1,7 +1,7 @@
 FROM java:8
 VOLUME /tmp
 EXPOSE 8080
-ADD aldrin-0.0.1-SNAPSHOT.jar app.jar
+ADD aldrin-docs-0.0.1-SNAPSHOT.jar app.jar
 ADD logback.xml /logback.xml
 ADD entrypoint.sh /entrypoint.sh
 ADD gitlog.html gitlog.html
