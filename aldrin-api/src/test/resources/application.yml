@@ -16,7 +16,8 @@ storage:
   location: upload-dir
 
 auth:
-  secret: mySecret
+  privateKey: classpath:fake-privatekey.der
+  publicKey: classpath:fake-publickey.der
   expiration: 604800
   headerName: Authorization
 
