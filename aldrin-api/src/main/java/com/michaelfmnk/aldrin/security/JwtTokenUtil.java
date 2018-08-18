@@ -27,7 +27,7 @@ import java.util.function.Function;
 @AllArgsConstructor
 public class JwtTokenUtil implements Serializable {
 
-    static final String CLAIN_KEY_ID = "jti";
+    static final String CLAIM_KEY_ID = "jti";
 
     static final String AUDIENCE_MOBILE = "mobile";
     static final String AUDIENCE_TABLET = "tablet";
@@ -261,7 +261,7 @@ public class JwtTokenUtil implements Serializable {
 
     private Map<String, Object> generateClaims(JwtUser jwtUser) {
         Map<String, Object> claims = new HashMap<>();
-        claims.put(CLAIN_KEY_ID, jwtUser.getId());
+        claims.put(CLAIM_KEY_ID, jwtUser.getId());
         return claims;
     }
 }
