@@ -12,5 +12,7 @@
     <modules>
         <module>aldrin-api</module>
         <module>aldrin-ui</module>
+        <module>aldrin-docs</module>
+        <module>e2e</module>
     </modules>
 </project>

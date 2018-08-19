@@ -8,5 +8,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class AuthProperties {
     private int expiration;
     private String headerName;
-    private String secret;
+    private String privateKey;
+    private String publicKey;
 }

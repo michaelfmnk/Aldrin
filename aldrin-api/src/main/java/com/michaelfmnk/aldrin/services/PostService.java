@@ -6,9 +6,11 @@ import com.michaelfmnk.aldrin.dtos.PostDto;
 import com.michaelfmnk.aldrin.dtos.params.PageSortParams;
 import com.michaelfmnk.aldrin.dtos.params.PageSortRequest;
 import com.michaelfmnk.aldrin.entities.Comment;
+import com.michaelfmnk.aldrin.entities.Like;
 import com.michaelfmnk.aldrin.entities.Post;
 import com.michaelfmnk.aldrin.entities.User;
 import com.michaelfmnk.aldrin.repositories.CommentRepository;
+import com.michaelfmnk.aldrin.repositories.LikeRepository;
 import com.michaelfmnk.aldrin.repositories.PostRepository;
 import com.michaelfmnk.aldrin.utils.ConverterService;
 import com.michaelfmnk.aldrin.utils.MessagesService;
@@ -18,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -29,6 +32,7 @@ public class PostService {
     private final UserService userService;
     private final ConverterService converterService;
     private final CommentRepository commentRepository;
+    private final LikeRepository likeRepository;
     private final MessagesService messagesService;
 
     public PostDto findPostById(Integer postId) {
@@ -57,7 +61,7 @@ public class PostService {
     }
 
     public void deleteLikeForPost(Integer postId, Integer userId) {
-        Post post = getValidPost(userId);
+        Post post = getValidPost(postId);
         post.getLikes().removeIf(x -> Objects.equals(userId, x.getUserId()));
         postRepository.save(post);
     }
@@ -100,12 +104,28 @@ public class PostService {
                 .orElseThrow(() -> new EntityNotFoundException(messagesService.getMessage("post.not.found")));
     }
 
-    // TRASH
-    public List<PostDto> getFeed(String name, PageSortParams params) {
-        List<Post> posts = postRepository.findPostByAuthor_FollowersUserId(1);
-        return posts.stream()
+    @Transactional
+    public void deletePost(Integer postId) {
+        Post postToDelete = getValidPost(postId);
+        postRepository.delete(postToDelete);
+    }
+
+    public Pagination<PostDto> getFeed(Integer userId, PageSortParams params) {
+        User user = userService.findValidUserById(userId);
+        Pageable pageable = PageSortRequest
+                .builder()
+                .limit(params.getLimit())
+                .offset(params.getOffset())
+                .sort(Post.SORTING_INFO.getDefaultSort(params.isAsc()))
+                .build();
+
+        Page<Post> feedPage = postRepository.findPostByAuthor_FollowersUserId(userId, pageable);
+        List<PostDto> postDtos = feedPage.getContent()
+                .stream()
                 .map(converterService::toDto)
+                .peek(dto -> dto.setLiked(likeRepository.existsById(new Like.LikePK(userId, dto.getId()))))
                 .collect(Collectors.toList());
+        return new Pagination<>(postDtos, feedPage.getTotalElements());
     }
 
 }

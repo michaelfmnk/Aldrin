@@ -14,7 +14,7 @@ public class ErrorDetailDto {
     private String title;
     private int status;
     private String detail;
-    private long timeStamp;
+    private long timestamp;
     private String devMessage;
 
     public static ErrorDetailDtoBuilder builder() {
@@ -25,7 +25,7 @@ public class ErrorDetailDto {
         private String title;
         private int status;
         private String detail;
-        private long timeStamp;
+        private long timestamp;
         private String devMessage;
 
         ErrorDetailDtoBuilder() {
@@ -44,16 +44,16 @@ public class ErrorDetailDto {
         }
 
         public ErrorDetailDtoBuilder timeStamp(Date date) {
-            this.timeStamp = date.getTime();
+            this.timestamp = date.getTime();
             return this;
         }
 
         public ErrorDetailDto build() {
-            return new ErrorDetailDto(title, status, detail, timeStamp, devMessage);
+            return new ErrorDetailDto(title, status, detail, timestamp, devMessage);
         }
 
         public String toString() {
-            return "ErrorDetailDto.ErrorDetailDtoBuilder(title=" + this.title + ", status=" + this.status + ", detail=" + this.detail + ", timeStamp=" + this.timeStamp + ", devMessage=" + this.devMessage + ")";
+            return "ErrorDetailDto.ErrorDetailDtoBuilder(title=" + this.title + ", status=" + this.status + ", detail=" + this.detail + ", timestamp=" + this.timestamp + ", devMessage=" + this.devMessage + ")";
         }
     }
 }

@@ -19,4 +19,5 @@ public class PostDto {
     private Integer authorId;
     private List<CommentDto> comments;
     private Integer likes;
+    private Boolean liked;
 }

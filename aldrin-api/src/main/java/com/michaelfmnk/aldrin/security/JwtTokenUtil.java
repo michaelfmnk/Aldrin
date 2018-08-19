@@ -7,8 +7,16 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ResourceUtils;
 
+import javax.annotation.PostConstruct;
 import java.io.Serializable;
+import java.nio.file.Files;
+import java.security.KeyFactory;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.security.spec.PKCS8EncodedKeySpec;
+import java.security.spec.X509EncodedKeySpec;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,18 +27,28 @@ import java.util.function.Function;
 @AllArgsConstructor
 public class JwtTokenUtil implements Serializable {
 
-    static final String CLAIM_KEY_USERNAME = "sub";
-    static final String CLAIM_KEY_AUDIENCE = "aud";
-    static final String CLAIM_KEY_CREATED = "iat";
-    static final String CLAIN_KEY_ID = "jti";
+    static final String CLAIM_KEY_ID = "jti";
 
-    static final String AUDIENCE_UNKNOWN = "unknown";
-    static final String AUDIENCE_WEB = "web";
     static final String AUDIENCE_MOBILE = "mobile";
     static final String AUDIENCE_TABLET = "tablet";
 
     private TimeProvider timeProvider;
     private final AuthProperties authProperties;
+    private static PrivateKey privateKey;
+    private static PublicKey publicKey;
+
+    @PostConstruct
+    public void init() throws Exception {
+
+        byte[] privateKeyBytes = Files.readAllBytes(ResourceUtils.getFile(authProperties.getPrivateKey()).toPath());
+        byte[] publicKeyBytes = Files.readAllBytes(ResourceUtils.getFile(authProperties.getPublicKey()).toPath());
+
+        PKCS8EncodedKeySpec privateSpec = new PKCS8EncodedKeySpec(privateKeyBytes);
+        X509EncodedKeySpec publicSpec = new X509EncodedKeySpec(publicKeyBytes);
+
+        privateKey = KeyFactory.getInstance("RSA").generatePrivate(privateSpec);
+        publicKey = KeyFactory.getInstance("RSA").generatePublic(publicSpec);
+    }
 
     /**
      * Gets username from a given jwt-token
@@ -63,7 +81,7 @@ public class JwtTokenUtil implements Serializable {
      */
     private Claims getAllClaimsFromToken(String token) {
         return Jwts.parser()
-                .setSigningKey(authProperties.getSecret())
+                .setSigningKey(privateKey)
                 .parseClaimsJws(token)
                 .getBody();
     }
@@ -168,7 +186,7 @@ public class JwtTokenUtil implements Serializable {
                 .setSubject(subject)
                 .setIssuedAt(createdDate)
                 .setExpiration(expirationDate)
-                .signWith(SignatureAlgorithm.HS512, authProperties.getSecret())
+                .signWith(SignatureAlgorithm.RS256, privateKey)
                 .compact();
 
     }
@@ -237,13 +255,13 @@ public class JwtTokenUtil implements Serializable {
         claims.setExpiration(expirationDate);
         return Jwts.builder()
                 .setClaims(claims)
-                .signWith(SignatureAlgorithm.HS512, authProperties.getSecret())
+                .signWith(SignatureAlgorithm.RS256, privateKey)
                 .compact();
     }
 
     private Map<String, Object> generateClaims(JwtUser jwtUser) {
         Map<String, Object> claims = new HashMap<>();
-        claims.put(CLAIN_KEY_ID, jwtUser.getId());
+        claims.put(CLAIM_KEY_ID, jwtUser.getId());
         return claims;
     }
 }

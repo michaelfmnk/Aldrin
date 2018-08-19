@@ -17,9 +17,9 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final ConverterService converterService;
 
-    public Comment getValidCommentById(Integer id) {
-        return commentRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(format("no comment was found with id=%s", id)));
+    private Comment getValidCommentById(Integer commentId) {
+        return commentRepository.findById(commentId)
+                .orElseThrow(() -> new EntityNotFoundException(format("no comment was found with id=%s", commentId)));
     }
 
     public CommentDto updateComment(Integer commentId, CommentDto commentDto) {
@@ -27,5 +27,10 @@ public class CommentService {
         comment.update(commentDto);
         comment = commentRepository.save(comment);
         return converterService.toDto(comment);
+    }
+
+    public void deleteCommentById(Integer commentId) {
+        Comment comment = getValidCommentById(commentId);
+        commentRepository.delete(comment);
     }
 }

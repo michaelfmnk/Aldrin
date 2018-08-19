@@ -18,6 +18,9 @@ import java.util.List;
 @AllArgsConstructor
 @Entity(name = "users")
 public class User {
+
+    public static final String USER_ID = "userId";
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer userId;
@@ -50,7 +53,7 @@ public class User {
     )
     private List<Authority> authorities;
 
-    @OneToMany
+    @ManyToMany
     @JoinTable(
             name = "likes",
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "userId"),

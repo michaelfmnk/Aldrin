@@ -16,10 +16,11 @@ storage:
   location: upload-dir
 
 auth:
-  secret: [credentials]
+  privateKey: classpath:fake-privatekey.der
+  publicKey: classpath:fake-publickey.der
   expiration: 604800
   headerName: Authorization
 
 mailjet:
-  publicKey: [credentials]
-  privateKey: [credentials]
+  publicKey: credentials
+  privateKey: credentials

@@ -13,6 +13,8 @@ spring:
     driver-class-name: org.postgresql.Driver
     tomcat:
       test-on-borrow: true
+      max-wait: 10000
+      max-active: 20
   http:
     multipart:
       max-file-size: 8MB
@@ -23,10 +25,11 @@ storage:
   location: upload-dir
 
 auth:
-  secret: [credentials]
+  privateKey: classpath:fake-privatekey.der
+  publicKey: classpath:fake-publickey.der
   expiration: 604800
   headerName: Authorization
 
 mailjet:
-  publicKey: [credentials]
-  privateKey: [credentials]
+  publicKey: credentials
+  privateKey: credentials

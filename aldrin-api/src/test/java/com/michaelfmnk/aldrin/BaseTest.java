@@ -30,6 +30,7 @@ import javax.sql.DataSource;
 public class BaseTest {
 
     protected Headers headers;
+    protected Headers adminHeaders;
     @LocalServerPort
     protected Integer port;
     @SpyBean
@@ -46,12 +47,19 @@ public class BaseTest {
     @Before
     public void init() {
         RestAssured.port = port;
-        final String token = jwtTokenUtil.generateToken(
+        final String userToken = jwtTokenUtil.generateToken(
                 JwtUser.builder()
                         .id(1)
                         .login("michaelfmnk@gmail.com")
                         .build());
-        headers = new Headers(new Header(authProperties.getHeaderName(), token));
+        headers = new Headers(new Header(authProperties.getHeaderName(), userToken));
+
+        final String adminToken = jwtTokenUtil.generateToken(
+                JwtUser.builder()
+                        .id(3)
+                        .login("admin@gmail.com")
+                        .build());
+        adminHeaders = new Headers(new Header(authProperties.getHeaderName(), adminToken));
     }
 
     @Test
