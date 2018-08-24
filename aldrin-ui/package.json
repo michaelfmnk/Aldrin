@@ -5,10 +5,33 @@
   "scripts": {
     "build": "rm -rf dist && webpack --mode production --config ./webpack.config.dev.js -p --color --progress && npm run po2json",
     "start": "rm -rf dist/lang && npm run po2json && webpack-dev-server --mode development --config ./webpack.config.dev.js --content-base dist --debug --output-pathinfo --watch --inline --port 8100",
+    "startLight": "webpack-dev-server --mode development --config ./webpack.config.dev.js --content-base dist --debug --output-pathinfo --watch --inline --port 8100",
     "test": "jest",
     "nodemon": "cross-env BABEL_ENV='node' nodemon server/runner.js",
     "extract_lang": "./bin/extract_lang.sh",
     "po2json": "./bin/po2json.sh"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "testPathIgnorePatterns": [
+      "/datasets/",
+      "/node_modules/"
+    ],
+    "timers": "fake",
+    "moduleFileExtensions": [
+      "js",
+      "jsx"
+    ],
+    "moduleDirectories": [
+      "node_modules",
+      "src"
+    ],
+    "coverageThreshold": {
+      "global": {
+        "branches": 55,
+        "functions": 50
+      }
+    }
   },
   "dependencies": {
     "@material-ui/core": "^1.2.1",
