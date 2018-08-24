@@ -21,13 +21,13 @@ services:
       - DB_NAME=aldrin,aldrin-docs
 
   aldrin-ui:
-    image: "aldrin/aldrin-ui"
+    image: "registry.gitlab.com/michaelfmnk/aldrin/aldrin-ui"
     restart: always
     ports:
       - "80"
 
   aldrin-api:
-    image: "aldrin/aldrin-api"
+    image: "registry.gitlab.com/michaelfmnk/aldrin/aldrin-api"
     restart: always
     environment:
     - JVM_MEMORY_OPTS=-Dspring.datasource.url=jdbc:postgresql://postgres:5432/aldrin -Dspring.datasource.username=postgres -Dspring.datasource.password=postgres -Dserver.port=8080 -Dauth.privateKey=/secret/fake-privatekey.der -Dauth.publicKey=/secret/fake-publickey.der
@@ -39,7 +39,7 @@ services:
       - "8080"
 
   aldrin-docs-api:
-    image: "aldrin/aldrin-docs-api"
+    image: "registry.gitlab.com/michaelfmnk/aldrin/aldrin-docs-api"
     restart: always
     environment:
     - JVM_MEMORY_OPTS=-Dspring.datasource.url=jdbc:postgresql://postgres:5432/aldrin-docs -Dspring.datasource.username=postgres -Dspring.datasource.password=postgres -Dserver.port=8080 -Dauth.publicKey=/secret/fake-publickey.der

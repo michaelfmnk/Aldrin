@@ -22,7 +22,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
-        <docker.image.name>aldrin/aldrin-docs-api</docker.image.name>
+        <docker.image.name>registry.gitlab.com/michaelfmnk/aldrin/aldrin-docs-api</docker.image.name>
         <docker.image.tag>latest</docker.image.tag>
     </properties>
 
