@@ -4,16 +4,21 @@ import { ConnectedRouter } from 'react-router-redux';
 import { Route, Switch } from 'react-router';
 import FeedContainer from 'containers/feed/FeedContainer';
 import MaterialLayoutContainer from 'containers/layout/MaterialLayoutContainer';
-import { MAIN } from 'data/routes';
+import LoginContainer from 'containers/login/LoginContainer';
+import { LOGIN, MAIN } from 'data/routes';
 
 
 const App = ({ history }) => (
     <ConnectedRouter history={history}>
         <div>
             <Switch>
+                <Route path={LOGIN} component={LoginContainer} />
                 <MaterialLayoutContainer>
-                    <Route to={MAIN} component={FeedContainer} />
+                    <Switch>
+                        <Route exact path={MAIN} component={FeedContainer} />
+                    </Switch>
                 </MaterialLayoutContainer>
+
             </Switch>
         </div>
     </ConnectedRouter>
