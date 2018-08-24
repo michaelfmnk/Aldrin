@@ -2,23 +2,21 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { ConnectedRouter } from 'react-router-redux';
 import { Route, Switch } from 'react-router';
-import FeedContainer from 'containers/feed/FeedContainer';
-import MaterialLayoutContainer from 'containers/layout/MaterialLayoutContainer';
+import Main from 'components/Main';
 import LoginContainer from 'containers/login/LoginContainer';
 import { LOGIN, MAIN } from 'data/routes';
+import { userIsAuthenticatedRedir, userIsNotAuthenticatedRedir } from 'auth';
 
+
+const MainComponent = userIsAuthenticatedRedir(Main);
+const LoginComponent = userIsNotAuthenticatedRedir(LoginContainer);
 
 const App = ({ history }) => (
     <ConnectedRouter history={history}>
         <div>
             <Switch>
-                <Route path={LOGIN} component={LoginContainer} />
-                <MaterialLayoutContainer>
-                    <Switch>
-                        <Route exact path={MAIN} component={FeedContainer} />
-                    </Switch>
-                </MaterialLayoutContainer>
-
+                <Route exact path={LOGIN} component={LoginComponent} />
+                <Route path={MAIN} component={MainComponent} />
             </Switch>
         </div>
     </ConnectedRouter>

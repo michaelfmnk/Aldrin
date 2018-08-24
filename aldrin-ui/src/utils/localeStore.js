@@ -1,0 +1,17 @@
+export function saveData(name, data) {
+    try {
+        localStorage.setItem(name, JSON.stringify(data));
+    } catch (err) {
+        console.error(err);
+    }
+}
+
+export function extractData(name) {
+    try {
+        const item = localStorage.getItem(name);
+        return item;
+    } catch (err) {
+        console.error(err);
+    }
+    return null;
+}

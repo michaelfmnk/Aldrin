@@ -3,11 +3,11 @@ import PropTypes from 'prop-types';
 import { TextField } from '@material-ui/core';
 
 const Field = ({
-                   input,
-                   label,
-                   meta: { touched, error },
-                   ...other
-               }) => (
+    input,
+    label,
+    meta: { touched, error },
+    ...other
+}) => (
     <TextField
         label={label}
         error={touched && !!error}

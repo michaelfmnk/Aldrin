@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import LoginLayout from 'components/login/LoginLayout';
 import { reduxForm } from 'redux-form/immutable';
-import { login } from 'actions/auth';
+import { login } from 'actions/session';
 
 const handleLogin = values => login({
     login: values.get('login'),

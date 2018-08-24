@@ -11,7 +11,7 @@
     <properties>
         <timestamp>${maven.build.timestamp}</timestamp>
         <maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
-        <docker.image.name>aldrin/aldrin-ui</docker.image.name>
+        <docker.image.name>registry.gitlab.com/michaelfmnk/aldrin/aldrin-ui</docker.image.name>
         <docker.image.tag>latest</docker.image.tag>
     </properties>
 

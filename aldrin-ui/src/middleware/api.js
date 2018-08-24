@@ -1,5 +1,6 @@
 import axios from 'axios';
 // import { getAuthHeaders } from 'selectors/session';
+
 import { SubmissionError } from 'redux-form/immutable';
 import { getLocale } from 'i18n';
 
@@ -69,7 +70,7 @@ export default store => next => (action) => {
         type: startAction(type),
     }));
     store.dispatch({ type: SEND_REQUEST, requestType: type });
-    const headers = null; //  getAuthHeaders(store.getState());
+    const headers = {};
     headers.locale = getLocale();
 
     return callApi(headers, method, endpoint, body, params, responseType).then(
