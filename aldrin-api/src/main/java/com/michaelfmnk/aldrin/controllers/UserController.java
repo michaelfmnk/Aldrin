@@ -1,9 +1,6 @@
 package com.michaelfmnk.aldrin.controllers;
 
-import com.michaelfmnk.aldrin.dtos.Pagination;
-import com.michaelfmnk.aldrin.dtos.PostDto;
-import com.michaelfmnk.aldrin.dtos.UserDto;
-import com.michaelfmnk.aldrin.dtos.VerificationCodeContainer;
+import com.michaelfmnk.aldrin.dtos.*;
 import com.michaelfmnk.aldrin.dtos.params.PageSortParams;
 import com.michaelfmnk.aldrin.services.UserService;
 import lombok.AllArgsConstructor;
@@ -28,8 +25,8 @@ public class UserController {
     }
 
     @PostMapping(Api.Users.VERIFY)
-    public void verifyCode(@PathVariable("user_id") Integer userId,
-                           @RequestBody VerificationCodeContainer verificationCode) {
-        userService.verifyCode(userId, verificationCode);
+    public TokenContainer verifyCode(@PathVariable("user_id") Integer userId,
+                                     @RequestBody VerificationCodeContainer verificationCode) {
+        return userService.verifyCode(userId, verificationCode);
     }
 }

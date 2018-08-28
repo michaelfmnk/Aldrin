@@ -1,10 +1,7 @@
 package com.michaelfmnk.aldrin.services;
 
 
-import com.michaelfmnk.aldrin.dtos.Pagination;
-import com.michaelfmnk.aldrin.dtos.PostDto;
-import com.michaelfmnk.aldrin.dtos.UserDto;
-import com.michaelfmnk.aldrin.dtos.VerificationCodeContainer;
+import com.michaelfmnk.aldrin.dtos.*;
 import com.michaelfmnk.aldrin.dtos.params.PageSortParams;
 import com.michaelfmnk.aldrin.dtos.params.PageSortRequest;
 import com.michaelfmnk.aldrin.entities.Post;
@@ -14,6 +11,8 @@ import com.michaelfmnk.aldrin.exceptions.BadRequestException;
 import com.michaelfmnk.aldrin.repositories.PostRepository;
 import com.michaelfmnk.aldrin.repositories.UserRepository;
 import com.michaelfmnk.aldrin.repositories.VerificationCodeRepository;
+import com.michaelfmnk.aldrin.security.JwtTokenUtil;
+import com.michaelfmnk.aldrin.security.JwtUser;
 import com.michaelfmnk.aldrin.security.JwtUserFactory;
 import com.michaelfmnk.aldrin.utils.ConverterService;
 import com.michaelfmnk.aldrin.utils.MessagesService;
@@ -41,6 +40,7 @@ public class UserService implements UserDetailsService {
     private final ConverterService converterService;
     private final MessagesService messagesService;
     private final VerificationCodeRepository verificationCodeRepository;
+    private final JwtTokenUtil jwtTokenUtil;
 
     @Override
     public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
@@ -89,7 +89,7 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    public void verifyCode(Integer userId, VerificationCodeContainer verificationCode) {
+    public TokenContainer verifyCode(Integer userId, VerificationCodeContainer verificationCode) {
         User user = findValidUserById(userId);
         if (user.isEnabled()) {
             throw new BadRequestException(messagesService.getMessage("user.activated.already"));
@@ -106,5 +106,9 @@ public class UserService implements UserDetailsService {
         userRepository.save(user);
 
         verificationCodeRepository.delete(code);
+
+        final JwtUser jwtUser = JwtUserFactory.create(user);
+        final String token = jwtTokenUtil.generateToken(jwtUser);
+        return new TokenContainer(token);
     }
 }
