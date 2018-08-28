@@ -1,7 +1,8 @@
 import { connect } from 'react-redux';
-import LoginLayout from 'components/login/LoginLayout';
+import Login from 'components/login/Login';
 import { reduxForm } from 'redux-form/immutable';
 import { login } from 'actions/session';
+import { getLoginError } from 'selectors/session';
 
 const handleLogin = values => login({
     login: values.get('login'),
@@ -13,9 +14,13 @@ const mapDispatchToProps = {
     onLogin: handleLogin,
 };
 
+const mapStateToProps = state => ({
+    errors: getLoginError(state),
+});
+
 const LoginForm = reduxForm({
     form: 'login',
     asyncBlurFields: ['email', 'password'],
-})(LoginLayout);
+})(Login);
 
-export default connect(undefined, mapDispatchToProps)(LoginForm);
+export default connect(mapStateToProps, mapDispatchToProps)(LoginForm);

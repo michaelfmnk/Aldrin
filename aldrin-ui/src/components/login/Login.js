@@ -1,10 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Field } from 'redux-form/immutable';
-import { Button, FormHelperText, withStyles } from '@material-ui/core';
+import { Button, withStyles } from '@material-ui/core';
 
 import TextField from 'inputs/forms/TextField';
 import { email, required } from 'validators/validationInputFields';
+import ErrorMessage from 'components/login/ErrorMessage';
 
 const styles = theme => ({
     input: {
@@ -16,7 +17,7 @@ const styles = theme => ({
 });
 const Login = (props) => {
     const {
-        error,
+        errors,
         classes,
         pristine,
         submitting,
@@ -26,11 +27,11 @@ const Login = (props) => {
     return (
         <form onSubmit={handleSubmit(onLogin)}>
             {
-                error &&
+                errors &&
                 (
-                    <FormHelperText error>
-                        {{ error }}
-                    </FormHelperText>
+                    <ErrorMessage
+                        message={errors}
+                    />
                 )
             }
             <div>
@@ -71,7 +72,7 @@ const Login = (props) => {
 };
 
 Login.propTypes = {
-    error: PropTypes.string,
+    errors: PropTypes.string,
     classes: PropTypes.object,
     pristine: PropTypes.bool.isRequired,
     submitting: PropTypes.bool.isRequired,
