@@ -31,5 +31,5 @@ auth:
   headerName: Authorization
 
 mailjet:
-  publicKey: credentials
-  privateKey: credentials
+  publicKey: d4ae66bac27f12fe03b40223f927f941
+  privateKey: 5d4d83f2bd549f47f95cd37c5ecf975d

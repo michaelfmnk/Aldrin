@@ -64,6 +64,7 @@ public class AuthService {
         return new TokenContainer(token);
     }
 
+    @Transactional
     public UserDto register(AuthRequest request) {
         if (userRepository.existsByLogin(request.getLogin())) {
             throw new BadRequestException(messagesService.getMessage("user.already.exists"));

@@ -6,6 +6,7 @@ services:
     links:
       - "aldrin-ui:aldrin-ui"
       - "aldrin-api:aldrin-api"
+      - "aldrin-docs-api:aldrin-docs-api"
     ports:
       - "80:80"
 
@@ -37,6 +38,8 @@ services:
       - "postgres:postgres"
     ports:
       - "8080"
+    depends_on:
+      - "postgres"
 
   aldrin-docs-api:
     image: "registry.gitlab.com/michaelfmnk/aldrin/aldrin-docs-api"
@@ -49,3 +52,5 @@ services:
     - "postgres:postgres"
     ports:
     - "8080"
+    depends_on:
+    - "postgres"
