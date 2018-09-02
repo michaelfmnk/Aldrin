@@ -4,6 +4,7 @@ export const LOGIN = 'LOGIN';
 export const REGISTER = 'REGISTER';
 export const RESTORE_AUTH = 'RESTORE_AUTH';
 export const VERIFY_USER = 'VERIFY_USER';
+export const SIGN_OUT = 'SIGN_OUT';
 
 export const login = credentials => ({
     [CALL_API]: {
@@ -23,19 +24,20 @@ export const register = credentials => ({
     },
 });
 
-export const submitCode = (userId, code) => {
-    console.log(userId, code, '<<<<<<');
-    return {
-        [CALL_API]: {
-            type: VERIFY_USER,
-            endpoint: `/aldrin-api/users/${userId}/verify`,
-            method: 'post',
-            body: {
-                code,
-            },
+export const submitCode = (userId, code) => ({
+    [CALL_API]: {
+        type: VERIFY_USER,
+        endpoint: `/aldrin-api/users/${userId}/verify`,
+        method: 'post',
+        body: {
+            code,
         },
-    };
-};
+    },
+});
+
+export const signOut = () => ({
+    type: SIGN_OUT,
+});
 
 export const restoreAuth = token => ({
     type: RESTORE_AUTH,

@@ -15,3 +15,11 @@ export function extractData(name) {
     }
     return null;
 }
+
+export function deleteData(name) {
+    try {
+        localStorage.removeItem(name);
+    } catch (err) {
+        console.log(err);
+    }
+}

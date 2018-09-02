@@ -28,6 +28,7 @@ class TopBar extends PureComponent {
     static propTypes = {
         classes: PropTypes.object.isRequired, // eslint-disable-line
         theme: PropTypes.object.isRequired, // eslint-disable-line
+        handleSignOut: PropTypes.func.isRequired,
     };
 
     constructor(props) {
@@ -95,7 +96,7 @@ class TopBar extends PureComponent {
                             open={open}
                         >
                             <MenuItem onClick={this.handleClose}>Profile</MenuItem>
-                            <MenuItem onClick={this.handleClose}>Sign Out</MenuItem>
+                            <MenuItem onClick={this.props.handleSignOut}>Sign Out</MenuItem>
                         </Menu>
                     </div>
                 </Toolbar>

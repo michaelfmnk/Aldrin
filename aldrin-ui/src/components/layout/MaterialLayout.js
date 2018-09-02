@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { Drawer, IconButton, withStyles, List, ListItem, ListItemIcon, ListItemText } from '@material-ui/core';
-import TopBarContainer from 'components/layout/TopBar';
+import TopBarContainer from 'containers/layout/TopBarContainer';
 import cx from 'classnames';
 import { getAsideMenu } from 'data/asideMenu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';

@@ -1,9 +1,15 @@
-import { saveData, extractData } from 'utils/localeStore';
+import { saveData, extractData, deleteData } from 'utils/localeStore';
+
+const JWT_TOKEN_KEY = 'authToken';
 
 export function saveTokenToStore(data) {
-    saveData('authToken', data);
+    saveData(JWT_TOKEN_KEY, data);
 }
 
 export function extractTokenFromStore() {
-    return extractData('authToken');
+    return extractData(JWT_TOKEN_KEY);
+}
+
+export function deleteTokenFromStore() {
+    deleteData(JWT_TOKEN_KEY);
 }

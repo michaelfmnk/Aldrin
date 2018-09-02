@@ -1,7 +1,7 @@
 import { fork, takeLatest, select } from 'redux-saga/effects';
-import { LOGIN, VERIFY_USER } from 'actions/session';
+import { LOGIN, VERIFY_USER, SIGN_OUT } from 'actions/session';
 import { successAction } from 'actions/actionTypes';
-import { saveTokenToStore } from 'utils/session';
+import { saveTokenToStore, deleteTokenFromStore } from 'utils/session';
 import { getToken } from 'selectors/session';
 
 
@@ -15,6 +15,11 @@ function* watchLogin() {
     yield takeLatest(successAction(VERIFY_USER), saveToken);
 }
 
+function* watchSignOut() {
+    yield takeLatest(SIGN_OUT, deleteTokenFromStore);
+}
+
 export default function* rootSaga() {
     yield fork(watchLogin);
+    yield fork(watchSignOut);
 }

@@ -1,6 +1,6 @@
 import { fromJS } from 'immutable';
 import { startAction, successAction, failAction, UNAUTHORIZED } from 'actions/actionTypes';
-import { LOGIN, RESTORE_AUTH, REGISTER, VERIFY_USER } from 'actions/session';
+import { LOGIN, RESTORE_AUTH, REGISTER, VERIFY_USER, SIGN_OUT } from 'actions/session';
 
 const defaultState = fromJS({ logginIn: false, loggedIn: false });
 
@@ -17,13 +17,20 @@ export default function session(state = defaultState, action) {
                 token: action.response.data.token,
             });
         }
-        case UNAUTHORIZED:
+        case successAction(REGISTER): {
+            return state.merge({
+                registerError: null,
+                verifying: true,
+                registeredUserId: action.response.data.id,
+            });
+        }
         case failAction(LOGIN): {
-            return fromJS({
-                logginIn: false,
-                loggedIn: false,
+            return defaultState.merge({
                 loginError: action.response.data.detail,
             });
+        }
+        case failAction(REGISTER): {
+            return state.merge({ registerError: action.response.data.detail });
         }
         case RESTORE_AUTH: {
             return fromJS({
@@ -32,15 +39,9 @@ export default function session(state = defaultState, action) {
                 token: action.token,
             });
         }
-        case successAction(REGISTER): {
-            return state.merge({
-                registerError: null,
-                verifying: true,
-                registeredUserId: action.response.data.id,
-            });
-        }
-        case failAction(REGISTER): {
-            return state.merge({ registerError: action.response.data.detail });
+        case UNAUTHORIZED:
+        case SIGN_OUT: {
+            return defaultState;
         }
         default: {
             return state;
