@@ -27,7 +27,7 @@ import javax.sql.DataSource;
 @SqlGroup({@Sql(value = {"classpath:test-clean.sql"}), @Sql})
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class BaseTest {
+public abstract class BaseTest {
 
     protected Headers headers;
     protected Headers adminHeaders;
@@ -60,11 +60,6 @@ public class BaseTest {
                         .login("admin@gmail.com")
                         .build());
         adminHeaders = new Headers(new Header(authProperties.getHeaderName(), adminToken));
-    }
-
-    @Test
-    public void contextLoads() {
-
     }
 
 }
